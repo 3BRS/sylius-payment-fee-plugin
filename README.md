@@ -1,19 +1,19 @@
 <p align="center">
-    <a href="https://www.mangoweb.cz/en/" target="_blank">
-        <img src="https://avatars0.githubusercontent.com/u/38423357?s=200&v=4"/>
+    <a href="https://www.3brs.com" target="_blank">
+        <img src="https://3brs1.fra1.cdn.digitaloceanspaces.com/3brs/logo/3BRS-logo-sylius-200.png"/>
     </a>
 </p>
 <h1 align="center">
 Payment Fee Plugin
 <br />
-    <a href="https://packagist.org/packages/mangoweb-sylius/sylius-payment-fee-plugin" title="License" target="_blank">
-        <img src="https://img.shields.io/packagist/l/mangoweb-sylius/sylius-payment-fee-plugin.svg" />
+    <a href="https://packagist.org/packages/3brs/sylius-payment-fee-plugin" title="License" target="_blank">
+        <img src="https://img.shields.io/packagist/l/3brs/sylius-payment-fee-plugin.svg" />
     </a>
-    <a href="https://packagist.org/packages/mangoweb-sylius/sylius-payment-fee-plugin" title="Version" target="_blank">
-        <img src="https://img.shields.io/packagist/v/mangoweb-sylius/sylius-payment-fee-plugin.svg" />
+    <a href="https://packagist.org/packages/3brs/sylius-payment-fee-plugin" title="Version" target="_blank">
+        <img src="https://img.shields.io/packagist/v/3brs/sylius-payment-fee-plugin.svg" />
     </a>
-    <a href="http://travis-ci.org/mangoweb-sylius/SyliusPaymentFeePlugin" title="Build status" target="_blank">
-        <img src="https://img.shields.io/travis/mangoweb-sylius/SyliusPaymentFeePlugin/master.svg" />
+    <a href="http://travis-ci.com/3brs/sylius-payment-fee-plugin" title="Build status" target="_blank">
+        <img src="https://img.shields.io/travis/3brs/sylius-payment-fee-plugin/master.svg" />
     </a>
 </h1>
 
@@ -24,7 +24,7 @@ Payment Fee Plugin
 * Taxes are implemented the same way as taxes for shipping fees.
 
 <p align="center">
-	<img src="https://raw.githubusercontent.com/mangoweb-sylius/SyliusPaymentFeePlugin/master/doc/admin.png"/>
+	<img src="https://raw.githubusercontent.com/3BRS/sylius-payment-fee-plugin/master/doc/admin.png"/>
 </p>
 
 ## Installation
@@ -117,4 +117,5 @@ This library is under the MIT license.
 
 Credits
 -------
-Developed by [manGoweb](https://www.mangoweb.eu/).
+Developed by [3BRS](https://3brs.com)<br>
+Forked from [manGoweb](https://github.com/mangoweb-sylius/SyliusPaymentFeePlugin).
