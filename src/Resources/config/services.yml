@@ -5,59 +5,59 @@ services:
         public: false
 
     Sylius\Component\Channel\Context\ChannelContextInterface: '@sylius.context.channel.cached'
-    MangoSylius\PaymentFeePlugin\Form\Type\Calculator\FlatRateConfigurationType: ~
-    MangoSylius\PaymentFeePlugin\Model\Calculator\DelegatingCalculatorInterface: '@MangoSylius\PaymentFeePlugin\Model\Calculator\DelegatingCalculator'
+    ThreeBRS\SyliusPaymentFeePlugin\Form\Type\Calculator\FlatRateConfigurationType: ~
+    ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculatorInterface: '@ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculator'
 
-    MangoSylius\PaymentFeePlugin\Model\Calculator\DelegatingCalculator:
+    ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculator:
         arguments:
-            $registry: '@mango_sylius.payment_fee_plugin.registry.payment_calculator'
+            $registry: '@threebrs.sylius_payment_fee_plugin.registry.payment_calculator'
 
-    MangoSylius\PaymentFeePlugin\Form\Type\CalculatorChoiceType:
+    ThreeBRS\SyliusPaymentFeePlugin\Form\Type\CalculatorChoiceType:
         arguments:
-            $calculators: '%mango_sylius.payment_fee_plugin.payment_fee_calculators%'
+            $calculators: '%threebrs.sylius_payment_fee_plugin.payment_fee_calculators%'
         tags:
             - name: form.type
 
-    MangoSylius\PaymentFeePlugin\Form\Extension\PaymentMethodTypeExtension:
+    ThreeBRS\SyliusPaymentFeePlugin\Form\Extension\PaymentMethodTypeExtension:
         arguments:
-            $calculatorRegistry: '@mango_sylius.payment_fee_plugin.registry.payment_calculator'
-            $formTypeRegistry: '@mango_sylius.payment_fee_plugin.form_registry.payment_calculator'
+            $calculatorRegistry: '@threebrs.sylius_payment_fee_plugin.registry.payment_calculator'
+            $formTypeRegistry: '@threebrs.sylius_payment_fee_plugin.form_registry.payment_calculator'
         tags:
             - extended_type: Sylius\Bundle\PaymentBundle\Form\Type\PaymentMethodType
               name: form.type_extension
 
-    MangoSylius\PaymentFeePlugin\Form\Extension\PaymentMethodChoiceTypeExtension:
+    ThreeBRS\SyliusPaymentFeePlugin\Form\Extension\PaymentMethodChoiceTypeExtension:
         arguments:
-            $calculatorRegistry: '@mango_sylius.payment_fee_plugin.registry.payment_calculator'
+            $calculatorRegistry: '@threebrs.sylius_payment_fee_plugin.registry.payment_calculator'
         tags:
             - name: form.type_extension
               extended_type: Sylius\Bundle\PaymentBundle\Form\Type\PaymentMethodChoiceType
 
-    mango_sylius.payment_fee_plugin.registry.payment_calculator:
+    threebrs.sylius_payment_fee_plugin.registry.payment_calculator:
         class: Sylius\Component\Registry\ServiceRegistry
         arguments:
             $context: payment fee calculator
-            $className: MangoSylius\PaymentFeePlugin\Model\Calculator\CalculatorInterface
+            $className: ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\CalculatorInterface
 
-    mango_sylius.payment_fee_plugin.form_registry.payment_calculator:
+    threebrs.sylius_payment_fee_plugin.form_registry.payment_calculator:
         class: Sylius\Bundle\ResourceBundle\Form\Registry\FormTypeRegistry
 
-    MangoSylius\PaymentFeePlugin\Model\Calculator\FlatRateCalculator:
+    ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\FlatRateCalculator:
         tags:
             - calculator: flat_rate
-              form_type: MangoSylius\PaymentFeePlugin\Form\Type\Calculator\ChannelBasedFlatRateConfigurationType
-              label: 'mango-sylius.form.payment_calculator.flat_rate_configuration.label'
-              name: MangoSylius\PaymentFeePlugin\Model\Calculator\DelegatingCalculator
+              form_type: ThreeBRS\SyliusPaymentFeePlugin\Form\Type\Calculator\ChannelBasedFlatRateConfigurationType
+              label: 'threebrs.form.payment_calculator.flat_rate_configuration.label'
+              name: ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculator
 
-    MangoSylius\PaymentFeePlugin\Model\PaymentChargesProcessor:
+    ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentChargesProcessor:
         arguments:
             $adjustmentFactory: '@sylius.factory.adjustment'
-            $paymentChargesCalculator: '@MangoSylius\PaymentFeePlugin\Model\Calculator\DelegatingCalculator'
+            $paymentChargesCalculator: '@ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculator'
         tags:
             - name: sylius.order_processor
               priotiry: 0
 
-    mango_sylius.payment_fee_plugin.order_processing.order_payment_processor.checkout:
+    threebrs.sylius_payment_fee_plugin.order_processing.order_payment_processor.checkout:
         class: Sylius\Component\Core\OrderProcessing\OrderPaymentProcessor
         arguments:
             - '@sylius.order_payment_provider'
@@ -65,22 +65,22 @@ services:
             - name: sylius.order_processor
               priotiry: 5
 
-    mango_sylius.payment_fee_plugin.block_event_listener.admin.layout.javascripts:
+    threebrs.sylius_payment_fee_plugin.block_event_listener.admin.layout.javascripts:
         class: Sylius\Bundle\UiBundle\Block\BlockEventListener
         arguments:
-            - '@@MangoSyliusPaymentFeePlugin/Admin/_javascripts.html.twig'
+            - '@@ThreeBRSSyliusPaymentFeePlugin/Admin/_javascripts.html.twig'
         tags:
             - event: sonata.block.event.sylius.admin.layout.javascripts
               method: onBlockEvent
               name: kernel.event_listener
 
-    MangoSylius\PaymentFeePlugin\Model\Taxation\Applicator\OrderPaymentTaxesApplicator:
+    ThreeBRS\SyliusPaymentFeePlugin\Model\Taxation\Applicator\OrderPaymentTaxesApplicator:
         arguments:
             $calculator: '@sylius.tax_calculator'
             $adjustmentFactory: '@sylius.factory.adjustment'
             $taxRateResolver: '@sylius.tax_rate_resolver'
 
-    mango_sylius.taxation.order_items_based_strategy:
+    threebrs.taxation.order_items_based_strategy:
         class: Sylius\Bundle\CoreBundle\Taxation\Strategy\TaxCalculationStrategy
         decorates: sylius.taxation.order_items_based_strategy
         tags:
@@ -89,9 +89,9 @@ services:
               label: 'Order items based'
         arguments:
             $type: 'order_items_based'
-            $applicators: ['@sylius.taxation.order_items_taxes_applicator', '@sylius.taxation.order_shipment_taxes_applicator', '@MangoSylius\PaymentFeePlugin\Model\Taxation\Applicator\OrderPaymentTaxesApplicator']
+            $applicators: ['@sylius.taxation.order_items_taxes_applicator', '@sylius.taxation.order_shipment_taxes_applicator', '@ThreeBRS\SyliusPaymentFeePlugin\Model\Taxation\Applicator\OrderPaymentTaxesApplicator']
 
-    mango_sylius.taxation.order_item_units_based_strategy:
+    threebrs.taxation.order_item_units_based_strategy:
         class: Sylius\Bundle\CoreBundle\Taxation\Strategy\TaxCalculationStrategy
         decorates: sylius.taxation.order_item_units_based_strategy
         tags:
@@ -100,4 +100,4 @@ services:
               label: 'Order item units based'
         arguments:
             $type: order_item_units_based
-            $applicators: ['@sylius.taxation.order_item_units_taxes_applicator', '@sylius.taxation.order_shipment_taxes_applicator', '@MangoSylius\PaymentFeePlugin\Model\Taxation\Applicator\OrderPaymentTaxesApplicator']
+            $applicators: ['@sylius.taxation.order_item_units_taxes_applicator', '@sylius.taxation.order_shipment_taxes_applicator', '@ThreeBRS\SyliusPaymentFeePlugin\Model\Taxation\Applicator\OrderPaymentTaxesApplicator']

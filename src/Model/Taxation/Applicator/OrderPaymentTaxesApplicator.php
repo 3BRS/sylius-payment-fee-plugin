@@ -2,120 +2,104 @@
 
 declare(strict_types=1);
 
-namespace MangoSylius\PaymentFeePlugin\Model\Taxation\Applicator;
+namespace ThreeBRS\SyliusPaymentFeePlugin\Model\Taxation\Applicator;
 
-use MangoSylius\PaymentFeePlugin\Model\AdjustmentInterface;
-use MangoSylius\PaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
-use Payum\Core\Model\PaymentInterface;
 use Sylius\Component\Addressing\Model\ZoneInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Taxation\Applicator\OrderTaxesApplicatorInterface;
 use Sylius\Component\Order\Factory\AdjustmentFactoryInterface;
+use Sylius\Component\Payment\Model\PaymentInterface;
 use Sylius\Component\Taxation\Calculator\CalculatorInterface;
 use Sylius\Component\Taxation\Resolver\TaxRateResolverInterface;
+use ThreeBRS\SyliusPaymentFeePlugin\Model\AdjustmentInterface;
+use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
 use Webmozart\Assert\Assert;
 
 class OrderPaymentTaxesApplicator implements OrderTaxesApplicatorInterface
 {
-	/**
-	 * @var CalculatorInterface
-	 */
-	private $calculator;
+    /** @var CalculatorInterface */
+    private $calculator;
 
-	/**
-	 * @var AdjustmentFactoryInterface
-	 */
-	private $adjustmentFactory;
+    /** @var AdjustmentFactoryInterface */
+    private $adjustmentFactory;
 
-	/**
-	 * @var TaxRateResolverInterface
-	 */
-	private $taxRateResolver;
+    /** @var TaxRateResolverInterface */
+    private $taxRateResolver;
 
-	/**
-	 * @param CalculatorInterface $calculator
-	 * @param AdjustmentFactoryInterface $adjustmentFactory
-	 * @param TaxRateResolverInterface $taxRateResolver
-	 */
-	public function __construct(
-		CalculatorInterface $calculator,
-		AdjustmentFactoryInterface $adjustmentFactory,
-		TaxRateResolverInterface $taxRateResolver
-	) {
-		$this->calculator = $calculator;
-		$this->adjustmentFactory = $adjustmentFactory;
-		$this->taxRateResolver = $taxRateResolver;
-	}
+    public function __construct(
+        CalculatorInterface $calculator,
+        AdjustmentFactoryInterface $adjustmentFactory,
+        TaxRateResolverInterface $taxRateResolver
+    ) {
+        $this->calculator = $calculator;
+        $this->adjustmentFactory = $adjustmentFactory;
+        $this->taxRateResolver = $taxRateResolver;
+    }
 
-	private function getPaymentFee(OrderInterface $order): int
-	{
-		$paymentFees = $order->getAdjustmentsRecursively(AdjustmentInterface::PAYMENT_ADJUSTMENT);
-		if (!$paymentFees->count()) {
-			return 0;
-		}
+    private function getPaymentFee(OrderInterface $order): int
+    {
+        $paymentFees = $order->getAdjustmentsRecursively(AdjustmentInterface::PAYMENT_ADJUSTMENT);
+        if (!$paymentFees->count()) {
+            return 0;
+        }
 
-		$paymentFee = $paymentFees->first();
+        $paymentFee = $paymentFees->first();
+        assert($paymentFee instanceof AdjustmentInterface);
 
-		return $paymentFee->getAmount();
-	}
+        return $paymentFee->getAmount();
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function apply(OrderInterface $order, ZoneInterface $zone): void
-	{
-		$paymentTotal = $this->getPaymentFee($order);
+    /**
+     * @inheritdoc
+     */
+    public function apply(OrderInterface $order, ZoneInterface $zone): void
+    {
+        $paymentTotal = $this->getPaymentFee($order);
 
-		if (0 === $paymentTotal) {
-			return;
-		}
+        if (0 === $paymentTotal) {
+            return;
+        }
 
-		$paymentMethod = $this->getPaymentMethod($order);
-		if ($paymentMethod === null) {
-			return;
-		}
+        $paymentMethod = $this->getPaymentMethod($order);
+        if ($paymentMethod === null) {
+            return;
+        }
 
-		$taxRate = $this->taxRateResolver->resolve($paymentMethod, ['zone' => $zone]);
-		if (null === $taxRate) {
-			return;
-		}
+        $taxRate = $this->taxRateResolver->resolve($paymentMethod, ['zone' => $zone]);
+        if (null === $taxRate) {
+            return;
+        }
 
-		$taxAmount = $this->calculator->calculate($paymentTotal, $taxRate);
-		if (0.00 === $taxAmount) {
-			return;
-		}
+        $taxAmount = $this->calculator->calculate($paymentTotal, $taxRate);
+        if (0.00 === $taxAmount) {
+            return;
+        }
 
-		$label = $taxRate->getLabel() ?? 'payment tax';
-		$this->addAdjustment($order, (int) $taxAmount, $label, $taxRate->isIncludedInPrice());
-	}
+        $label = $taxRate->getLabel() ?? 'payment tax';
+        $this->addAdjustment($order, (int) $taxAmount, $label, $taxRate->isIncludedInPrice());
+    }
 
-	/**
-	 * @param OrderInterface $order
-	 * @param int $taxAmount
-	 * @param string $label
-	 * @param bool $included
-	 */
-	private function addAdjustment(OrderInterface $order, int $taxAmount, string $label, bool $included): void
-	{
-		/** @var AdjustmentInterface $paymentTaxAdjustment */
-		$paymentTaxAdjustment = $this->adjustmentFactory
-			->createWithData(AdjustmentInterface::TAX_ADJUSTMENT, $label, $taxAmount, $included);
-		$order->addAdjustment($paymentTaxAdjustment);
-	}
+    private function addAdjustment(OrderInterface $order, int $taxAmount, string $label, bool $included): void
+    {
+        /** @var AdjustmentInterface $paymentTaxAdjustment */
+        $paymentTaxAdjustment = $this->adjustmentFactory
+            ->createWithData(AdjustmentInterface::TAX_ADJUSTMENT, $label, $taxAmount, $included);
+        $order->addAdjustment($paymentTaxAdjustment);
+    }
 
-	private function getPaymentMethod(OrderInterface $order): ?PaymentMethodWithFeeInterface
-	{
-		/** @var PaymentInterface|bool $shipment */
-		$payment = $order->getPayments()->first();
-		if (false === $payment) {
-			return null;
-		}
+    private function getPaymentMethod(OrderInterface $order): ?PaymentMethodWithFeeInterface
+    {
+        $payment = $order->getPayments()->first();
+        if (false === $payment) {
+            return null;
+        }
 
-		$method = $payment->getMethod();
+        assert($payment instanceof PaymentInterface);
 
-		/** @var PaymentMethodWithFeeInterface $method */
-		Assert::isInstanceOf($method, PaymentMethodWithFeeInterface::class);
+        /** @var PaymentMethodWithFeeInterface $method */
+        $method = $payment->getMethod();
+        Assert::isInstanceOf($method, PaymentMethodWithFeeInterface::class);
 
-		return $method;
-	}
+        return $method;
+    }
 }

@@ -1,7 +1,6 @@
 includes:
     - vendor/phpstan/phpstan-doctrine/extension.neon
     - vendor/phpstan/phpstan-symfony/extension.neon
-    - vendor/phpstan/phpstan-webmozart-assert/extension.neon
 
 parameters:
     symfony:
@@ -15,3 +14,9 @@ parameters:
         - '*/tests/Application/var/*'
 
         - '*/tests/Behat/*'
+
+        - 'tests/'
+
+        # Internal error: Property $vars was not found in reflection of class Symfony\Component\Form\FormView.
+        - src/Form/Extension/PaymentMethodChoiceTypeExtension.php
+        - src/Form/Extension/PaymentMethodTypeExtension.php

@@ -1,7 +1,7 @@
 <div class="ui segment">
 	<h4 class="ui dividing header">{{ 'sylius.ui.taxes'|trans }}</h4>
 	{{ form_row(form.taxCategory) }}
-	<h4 class="ui dividing header">{{ 'mango-sylius.ui.payment_charges'|trans }}</h4>
+	<h4 class="ui dividing header">{{ 'threebrs.ui.payment_charges'|trans }}</h4>
 	{{ form_row(form.calculator) }}
 	{% for name, calculatorConfigurationPrototype in form.vars.prototypes %}
 		<div id="{{ form.calculator.vars.id }}_{{ name }}" data-container=".calculatorConfiguration"
