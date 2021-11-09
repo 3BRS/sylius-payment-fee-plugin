@@ -4,7 +4,7 @@
 	"description": "Payment fee plugin for Sylius.",
 	"license": "MIT",
 	"require": {
-		"php": "^7.3",
+		"php": "^7.3|^8.0",
 		"sylius/sylius": "1.7.*|1.8.*|1.9.*|1.10.*"
 	},
 	"require-dev": {
@@ -45,19 +45,5 @@
 		"psr-4": {
 			"App\\": "tests/Application/src/"
 		}
-	},
-	"config": {
-		"platform": {
-			"php": "7.4",
-			"ext-sqlsrv": "0",
-			"ext-redis": "0",
-			"ext-exif": "0",
-			"ext-imagick": "0",
-			"ext-gd": "0"
-		},
-		"preferred-install": {
-			"*": "dist"
-		},
-		"sort-packages": true
 	}
 }
