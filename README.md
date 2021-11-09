@@ -12,9 +12,6 @@ Payment Fee Plugin
     <a href="https://packagist.org/packages/3brs/sylius-payment-fee-plugin" title="Version" target="_blank">
         <img src="https://img.shields.io/packagist/v/3brs/sylius-payment-fee-plugin.svg" />
     </a>
-    <a href="http://travis-ci.com/3brs/sylius-payment-fee-plugin" title="Build status" target="_blank">
-        <img src="https://img.shields.io/travis/3brs/sylius-payment-fee-plugin/master.svg" />
-    </a>
     <a href="https://circleci.com/gh/3BRS/sylius-payment-fee-plugin" title="Build status" target="_blank">
         <img src="https://circleci.com/gh/3BRS/sylius-payment-fee-plugin.svg?style=shield" />
     </a>
