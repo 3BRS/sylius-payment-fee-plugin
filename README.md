@@ -12,9 +12,6 @@ Payment Fee Plugin
     <a href="https://packagist.org/packages/3brs/sylius-payment-fee-plugin" title="Version" target="_blank">
         <img src="https://img.shields.io/packagist/v/3brs/sylius-payment-fee-plugin.svg" />
     </a>
-    <a href="http://travis-ci.com/3brs/sylius-payment-fee-plugin" title="Build status" target="_blank">
-        <img src="https://img.shields.io/travis/3brs/sylius-payment-fee-plugin/master.svg" />
-    </a>
     <a href="https://circleci.com/gh/3BRS/sylius-payment-fee-plugin" title="Build status" target="_blank">
         <img src="https://circleci.com/gh/3BRS/sylius-payment-fee-plugin.svg?style=shield" />
     </a>
@@ -40,56 +37,18 @@ For guide how to use your own entity see [Sylius docs - Customizing Models](http
 
 ### Admin
 
-1. Add this to `@SyliusAdmin/PaymentMethod/_form.html.twig` template.
+1. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig` into `@SyliusAdmin/PaymentMethod/_form.html.twig`.
 
 ```twig
-<div class="ui segment">
-	<h4 class="ui dividing header">{{ 'threebrs.ui.payment_charges'|trans }}</h4>
-	{{ form_row(form.calculator) }}
-	{% for name, calculatorConfigurationPrototype in form.vars.prototypes %}
-		<div id="{{ form.calculator.vars.id }}_{{ name }}" data-container=".calculatorConfiguration"
-			 data-prototype="{{ form_widget(calculatorConfigurationPrototype)|e }}">
-		</div>
-	{% endfor %}
-	<div class="ui segment calculatorConfiguration">
-		{% if form.calculatorConfiguration is defined %}
-			{% for field in form.calculatorConfiguration %}
-				{{ form_row(field) }}
-			{% endfor %}
-		{% endif %}
-	</div>
-</div>
+...
+{{ include('@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig') }}
 ```
 
-2. Add this to `AdminBundle/Resources/views/Order/Show/Summary/_totals.html.twig`.
+2. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig` into `@AdminBundle/Resources/views/Order/Show/Summary/_totals.html.twig`.
 
 ```twig
-
-{% set paymentFeeAdjustment = constant('ThreeBRS\\SyliusPaymentFeePlugin\\Model\\AdjustmentInterface::PAYMENT_ADJUSTMENT') %}
-
-{% set paymentFeeAdjustments = order.getAdjustmentsRecursively(paymentFeeAdjustment) %}
-{% if paymentFeeAdjustments is not empty %}
-	<tr>
-		<td colspan="4" id="payment-fee">
-			<div class="ui relaxed divided list">
-				{% for paymentFeeLabel, paymentFeeAmount in sylius_aggregate_adjustments(paymentFeeAdjustments) %}
-					<div class="item">
-						<div class="content">
-							<span class="header">{{ paymentFeeLabel }}</span>
-							<div class="description">
-								{{ money.format(paymentFeeAmount, order.currencyCode) }}
-							</div>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</td>
-		<td colspan="4" id="paymentFee-total" class="right aligned">
-			<strong>{{ 'threebrs.ui.paymentFee_total'|trans }}</strong>:
-			{{ money.format(order.getAdjustmentsTotal(paymentFeeAdjustment) ,order.currencyCode) }}
-		</td>
-	</tr>
-{% endif %}
+...
+{{ include('@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig') }}
 ```
 
 ## Development
