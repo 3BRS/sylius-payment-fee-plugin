@@ -1,0 +1,16 @@
+{% import "@SyliusShop/Common/Macro/money.html.twig" as money %}
+
+{% if order.shipments is not empty %}
+
+	{% set paymentFeeAdjustment = constant('ThreeBRS\\SyliusPaymentFeePlugin\\Model\\AdjustmentInterface::PAYMENT_ADJUSTMENT') %}
+	{% set paymentFeeAdjustmentTotal = order.getAdjustmentsTotal(paymentFeeAdjustment) %}
+
+	{% if paymentFeeAdjustmentTotal > 0 %}
+		<tr>
+			<td colspan="4" class="right aligned" id="shipping-total">
+				{{ 'threebrs.shop.ui.paymentFee_total'|trans }}:
+				<span {{ sylius_test_html_attribute('payment-total') }}>{{ money.convertAndFormat(paymentFeeAdjustmentTotal) }}</span>
+			</td>
+		</tr>
+	{% endif %}
+{% endif %}

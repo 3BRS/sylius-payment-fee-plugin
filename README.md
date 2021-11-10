@@ -41,14 +41,45 @@ For guide how to use your own entity see [Sylius docs - Customizing Models](http
 
 ```twig
 ...
-{{ include('@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig') }}
+{% include '@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig' %}
 ```
 
-2. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig` into `@AdminBundle/Resources/views/Order/Show/Summary/_totals.html.twig`.
+1. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig` into `@AdminBundle/Order/Show/Summary/_totals.html.twig`.
 
 ```twig
 ...
-{{ include('@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig') }}
+{% include '@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig' %}
+```
+
+### Shop
+
+1. Include `@ThreeBRSSyliusPaymentFeePlugin/Shop/Checkout/SelectPayment/_choice.html.twig` into `@ShopBundle/Checkout/SelectPayment/_choice.html.twig`.
+
+```twig
+...
+{% include '@ThreeBRSSyliusPaymentFeePlugin/Shop/Checkout/SelectPayment/_choice.html.twig' %}
+```
+
+1. Add variable fee `{% set fee = form.method.vars.payment_costs[choice_form.vars.value] %}` into `@ShopBundle/Checkout/SelectPayment/_payment.html.twig` into `foreach`.
+
+```twig
+...
+{% for key, choice_form in form.method %}
+    {% set fee = form.method.vars.payment_costs[choice_form.vars.value] %}
+    {% include '@SyliusShop/Checkout/SelectPayment/_choice.html.twig' with {'form': choice_form, 'method': form.method.vars.choices[key].data} %}
+{% else %}
+    {% include '@SyliusShop/Checkout/SelectPayment/_unavailable.html.twig' %}
+{% endfor %}
+```
+
+1. Include `@ThreeBRSSyliusPaymentFeePlugin/Shop/Common/Order/Table/_payment.html.twig` into `@ShopBundle/Common/Order/Table/_totals.html.twig`.
+
+```twig
+...
+<tr>
+    {% include '@SyliusShop/Common/Order/Table/_shipping.html.twig' with {'order': order} %}
+</tr>
+{% include '@ThreeBRSSyliusPaymentFeePlugin/Shop/Common/Order/Table/_payment.html.twig' with {'order': order} %}
 ```
 
 ## Development
