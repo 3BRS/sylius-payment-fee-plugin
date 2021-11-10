@@ -12,8 +12,8 @@ Payment Fee Plugin
     <a href="https://packagist.org/packages/3brs/sylius-payment-fee-plugin" title="Version" target="_blank">
         <img src="https://img.shields.io/packagist/v/3brs/sylius-payment-fee-plugin.svg" />
     </a>
-    <a href="http://travis-ci.com/3brs/sylius-payment-fee-plugin" title="Build status" target="_blank">
-        <img src="https://img.shields.io/travis/3brs/sylius-payment-fee-plugin/master.svg" />
+    <a href="https://circleci.com/gh/3BRS/sylius-payment-fee-plugin" title="Build status" target="_blank">
+        <img src="https://circleci.com/gh/3BRS/sylius-payment-fee-plugin.svg?style=shield" />
     </a>
 </h1>
 
@@ -29,67 +29,57 @@ Payment Fee Plugin
 
 ## Installation
 
-1. Run `$ composer require mangoweb-sylius/sylius-payment-fee-plugin`.
-2. Register `\MangoSylius\PaymentFeePlugin\MangoSyliusPaymentFeePlugin` in your Kernel.
-3. Your Entity `PaymentMethod` has to implement `\MangoSylius\PaymentFeePlugin\Model\PaymentMethodWithFeeInterface`. You can use Trait `MangoSylius\PaymentFeePlugin\Model\PaymentMethodWithFeeTrait`. 
+1. Run `$ composer require 3brs/sylius-payment-fee-plugin`.
+2. Register `\ThreeBRS\SyliusPaymentFeePlugin\ThreeBRSSyliusPaymentFeePlugin` in your Kernel.
+3. Your Entity `PaymentMethod` has to implement `\ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface`. You can use Trait `ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeTrait`. 
 
-For guide how to use your own entity see [Sylius docs - Customizing Models](https://docs.sylius.com/en/1.3/customization/model.html)
+For guide how to use your own entity see [Sylius docs - Customizing Models](https://docs.sylius.com/en/latest/customization/model.html)
 
 ### Admin
 
-1. Add this to `@SyliusAdmin/PaymentMethod/_form.html.twig` template.
+1. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig` into `@SyliusAdmin/PaymentMethod/_form.html.twig`.
 
 ```twig
-
-<div class="ui segment">
-	<h4 class="ui dividing header">{{ 'mango-sylius.ui.payment_charges'|trans }}</h4>
-	{{ form_row(form.calculator) }}
-	{% for name, calculatorConfigurationPrototype in form.vars.prototypes %}
-		<div id="{{ form.calculator.vars.id }}_{{ name }}" data-container=".calculatorConfiguration"
-			 data-prototype="{{ form_widget(calculatorConfigurationPrototype)|e }}">
-		</div>
-	{% endfor %}
-	<div class="ui segment calculatorConfiguration">
-		{% if form.calculatorConfiguration is defined %}
-			{% for field in form.calculatorConfiguration %}
-				{{ form_row(field) }}
-			{% endfor %}
-		{% endif %}
-	</div>
-</div>
+...
+{% include '@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig' %}
 ```
 
-2. Add this to `AdminBundle/Resources/views/Order/Show/Summary/_totals.html.twig`.
+1. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig` into `@AdminBundle/Order/Show/Summary/_totals.html.twig`.
 
 ```twig
+...
+{% include '@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig' %}
+```
 
-{% set paymentFeeAdjustment = constant('MangoSylius\\PaymentFeePlugin\\Model\\AdjustmentInterface::PAYMENT_ADJUSTMENT') %}
+### Shop
 
-{% set paymentFeeAdjustments = order.getAdjustmentsRecursively(paymentFeeAdjustment) %}
-{% if paymentFeeAdjustments is not empty %}
-	<tr>
-		<td colspan="4" id="payment-fee">
+1. Include `@ThreeBRSSyliusPaymentFeePlugin/Shop/Checkout/SelectPayment/_choice.html.twig` into `@ShopBundle/Checkout/SelectPayment/_choice.html.twig`.
 
-			<div class="ui relaxed divided list">
-				{% for paymentFeeLabel, paymentFeeAmount in sylius_aggregate_adjustments(paymentFeeAdjustments) %}
-					<div class="item">
-						<div class="content">
-							<span class="header">{{ paymentFeeLabel }}</span>
-							<div class="description">
-								{{ money.format(paymentFeeAmount, order.currencyCode) }}
-							</div>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
+```twig
+...
+{% include '@ThreeBRSSyliusPaymentFeePlugin/Shop/Checkout/SelectPayment/_choice.html.twig' %}
+```
 
-		</td>
-		<td colspan="4" id="paymentFee-total" class="right aligned">
-			<strong>{{ 'mango-sylius.ui.paymentFee_total'|trans }}</strong>:
-			{{ money.format(order.getAdjustmentsTotal(paymentFeeAdjustment) ,order.currencyCode) }}
-		</td>
-	</tr>
-{% endif %}
+1. Add variable fee `{% set fee = form.method.vars.payment_costs[choice_form.vars.value] %}` into `@ShopBundle/Checkout/SelectPayment/_payment.html.twig` into `foreach`.
+
+```twig
+...
+{% for key, choice_form in form.method %}
+    {% set fee = form.method.vars.payment_costs[choice_form.vars.value] %}
+    {% include '@SyliusShop/Checkout/SelectPayment/_choice.html.twig' with {'form': choice_form, 'method': form.method.vars.choices[key].data} %}
+{% else %}
+    {% include '@SyliusShop/Checkout/SelectPayment/_unavailable.html.twig' %}
+{% endfor %}
+```
+
+1. Include `@ThreeBRSSyliusPaymentFeePlugin/Shop/Common/Order/Table/_payment.html.twig` into `@ShopBundle/Common/Order/Table/_totals.html.twig`.
+
+```twig
+...
+<tr>
+    {% include '@SyliusShop/Common/Order/Table/_shipping.html.twig' with {'order': order} %}
+</tr>
+{% include '@ThreeBRSSyliusPaymentFeePlugin/Shop/Common/Order/Table/_payment.html.twig' with {'order': order} %}
 ```
 
 ## Development
@@ -103,14 +93,14 @@ For guide how to use your own entity see [Sylius docs - Customizing Models](http
 ### Testing
 
 After your changes you must ensure that the tests are still passing.
-* Easy Coding Standard
-  ```bash
-  bin/ecs.sh
-  ```
-* PHPStan
-  ```bash
-  bin/phpstan.sh
-  ```
+
+```bash
+$ composer install
+$ bin/console doctrine:schema:create -e test
+$ bin/phpstan.sh
+$ bin/ecs.sh
+```
+
 License
 -------
 This library is under the MIT license.

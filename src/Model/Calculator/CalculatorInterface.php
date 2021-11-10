@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace MangoSylius\PaymentFeePlugin\Model\Calculator;
+namespace ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator;
 
 use Sylius\Component\Payment\Model\PaymentInterface;
 
 interface CalculatorInterface
 {
-	public function calculate(PaymentInterface $subject, array $configuration): ?int;
+    /**
+     * @param array<mixed> $configuration
+     */
+    public function calculate(PaymentInterface $subject, array $configuration): ?int;
 
-	public function getType(): string;
+    public function getType(): string;
 }
