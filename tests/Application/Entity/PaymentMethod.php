@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\ThreeBRS\SyliusPaymentRestrictionPlugin\Application\Entity;
+namespace Tests\ThreeBRS\SyliusPaymentFeePlugin\Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Sylius\Component\Core\Model\PaymentMethod as BasePaymentMethod;

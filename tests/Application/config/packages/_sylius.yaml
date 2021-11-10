@@ -18,4 +18,4 @@ sylius_payment:
     resources:
         payment_method:
             classes:
-                model: Tests\ThreeBRS\SyliusPaymentRestrictionPlugin\Application\Entity\PaymentMethod
+                model: Tests\ThreeBRS\SyliusPaymentFeePlugin\Application\Entity\PaymentMethod

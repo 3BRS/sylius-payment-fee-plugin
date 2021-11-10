@@ -44,7 +44,7 @@ class OrderPaymentTaxesApplicator implements OrderTaxesApplicatorInterface
         }
 
         $paymentFee = $paymentFees->first();
-		assert($paymentFee instanceof \Sylius\Component\Core\Model\AdjustmentInterface);
+        assert($paymentFee instanceof \Sylius\Component\Core\Model\AdjustmentInterface);
 
         return $paymentFee->getAmount();
     }
