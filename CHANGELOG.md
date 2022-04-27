@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.*.0 (2022-04-**)
+
+#### Details
+
+- Add support for Sylius 1.11
+
 ## v1.0.0 (2021-11-10)
 
 #### Details
