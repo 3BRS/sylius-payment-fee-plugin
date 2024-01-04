@@ -12,9 +12,7 @@ use Sylius\Component\Payment\Model\PaymentInterface as BasePaymentInterface;
 final class FlatRateCalculator implements CalculatorInterface
 {
     /**
-     * @param array<mixed> $configuration
-     *
-     * @throws \Sylius\Component\Core\Exception\MissingChannelConfigurationException
+     * @throws MissingChannelConfigurationException|\ErrorException
      */
     public function calculate(BasePaymentInterface $subject, array $configuration): ?int
     {
@@ -34,17 +32,14 @@ final class FlatRateCalculator implements CalculatorInterface
                 sprintf(
                     'Channel %s has no amount defined for shipping method %s',
                     $order->getChannel()->getName(),
-                    $subject->getMethod() !== null ? $subject->getMethod()->getName() : 'null'
-                )
+                    $subject->getMethod() !== null ? $subject->getMethod()->getName() : 'null',
+                ),
             );
         }
 
         return (int) $configuration[$channelCode]['amount'];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getType(): string
     {
         return 'flat_rate';

@@ -15,13 +15,8 @@ use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
 
 class PaymentMethodChoiceTypeExtension extends AbstractTypeExtension
 {
-    /** @var ServiceRegistryInterface */
-    private $calculatorRegistry;
-
-    public function __construct(
-        ServiceRegistryInterface $calculatorRegistry
-    ) {
-        $this->calculatorRegistry = $calculatorRegistry;
+    public function __construct(private ServiceRegistryInterface $calculatorRegistry)
+    {
     }
 
     /**

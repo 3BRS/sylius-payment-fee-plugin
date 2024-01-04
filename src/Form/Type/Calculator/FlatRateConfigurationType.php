@@ -26,7 +26,7 @@ class FlatRateConfigurationType extends AbstractType
                     new Type(['type' => 'integer', 'groups' => ['sylius']]),
                 ],
                 'currency' => $options['currency'],
-            ]
+            ],
             );
     }
 
@@ -39,7 +39,7 @@ class FlatRateConfigurationType extends AbstractType
             ->setDefaults(
                 [
                 'data_class' => null,
-            ]
+            ],
             )
             ->setRequired('currency')
             ->setAllowedTypes('currency', 'string');

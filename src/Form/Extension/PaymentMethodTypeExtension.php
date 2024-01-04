@@ -21,24 +21,11 @@ use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
 
 class PaymentMethodTypeExtension extends AbstractTypeExtension
 {
-    /** @var ServiceRegistryInterface */
-    private $calculatorRegistry;
-
-    /** @var FormTypeRegistryInterface */
-    private $formTypeRegistry;
-
-    public function __construct(
-        ServiceRegistryInterface $calculatorRegistry,
-        FormTypeRegistryInterface $formTypeRegistry
-    ) {
-        $this->calculatorRegistry = $calculatorRegistry;
-        $this->formTypeRegistry = $formTypeRegistry;
+    public function __construct(private ServiceRegistryInterface $calculatorRegistry, private FormTypeRegistryInterface $formTypeRegistry)
+    {
     }
 
-    /**
-     * @param array<mixed> $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->addEventSubscriber(new AddCodeFormSubscriber())
@@ -48,7 +35,7 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                 CalculatorChoiceType::class,
                 [
                     'label' => 'threebrs.form.payment_method.calculator',
-                ]
+                ],
             )->addEventListener(
                 FormEvents::PRE_SET_DATA,
                 function (FormEvent $event) {
@@ -61,7 +48,7 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                     if ($method instanceof PaymentMethodWithFeeInterface && $method->getCalculator() !== null) {
                         $this->addConfigurationField($event->getForm(), $method->getCalculator());
                     }
-                }
+                },
             )
             ->addEventListener(
                 FormEvents::PRE_SUBMIT,
@@ -73,8 +60,9 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                     }
 
                     $this->addConfigurationField($event->getForm(), $data['calculator']);
-                }
-            );
+                },
+            )
+        ;
 
         $prototypes = [];
         foreach ($this->calculatorRegistry->all() as $name => $calculator) {
@@ -85,7 +73,10 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                 continue;
             }
 
-            $form = $builder->create('calculatorConfiguration', $this->formTypeRegistry->get($calculatorType, 'default'));
+            $form = $builder->create(
+                'calculatorConfiguration',
+                $this->formTypeRegistry->get($calculatorType, 'default'),
+            );
 
             $prototypes['calculators'][$name] = $form->getForm();
         }

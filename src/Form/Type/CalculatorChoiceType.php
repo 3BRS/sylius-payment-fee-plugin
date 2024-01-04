@@ -10,15 +10,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class CalculatorChoiceType extends AbstractType
 {
-    /** @var array<mixed> */
-    private $calculators;
-
     /**
      * @param array<mixed> $calculators
      */
-    public function __construct(array $calculators)
+    public function __construct(private array $calculators)
     {
-        $this->calculators = $calculators;
     }
 
     /**
