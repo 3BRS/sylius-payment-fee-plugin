@@ -29,7 +29,7 @@ final class ChannelBasedFlatRateConfigurationType extends AbstractType
                         'currency' => $channel->getBaseCurrency()->getCode(),
                     ];
                 },
-            ]
+            ],
         );
     }
 

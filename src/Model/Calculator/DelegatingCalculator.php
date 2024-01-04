@@ -10,22 +10,17 @@ use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
 
 final class DelegatingCalculator implements DelegatingCalculatorInterface
 {
-    /** @var ServiceRegistryInterface */
-    private $registry;
-
-    public function __construct(ServiceRegistryInterface $registry)
+    public function __construct(private ServiceRegistryInterface $registry)
     {
-        $this->registry = $registry;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function calculate(PaymentInterface $subject): ?int
     {
         $method = $subject->getMethod();
         if ($method === null) {
-            throw new UndefinedPaymentMethodException('Cannot calculate charge for payment without a defined payment method.');
+            throw new UndefinedPaymentMethodException(
+                'Cannot calculate charge for payment without a defined payment method.',
+            );
         }
 
         if (!($method instanceof PaymentMethodWithFeeInterface)) {

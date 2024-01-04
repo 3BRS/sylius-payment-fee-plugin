@@ -9,8 +9,6 @@ use Sylius\Component\Payment\Model\PaymentInterface as BasePaymentInterface;
 final class FreeCalculator implements CalculatorInterface
 {
     /**
-     * @param array<mixed> $configuration
-     *
      * @throws \Sylius\Component\Core\Exception\MissingChannelConfigurationException
      */
     public function calculate(BasePaymentInterface $subject, array $configuration): ?int
@@ -18,9 +16,6 @@ final class FreeCalculator implements CalculatorInterface
         return null;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getType(): string
     {
         return 'free';

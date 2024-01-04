@@ -13,27 +13,14 @@ use Sylius\Component\Taxation\Calculator\CalculatorInterface;
 use Sylius\Component\Taxation\Resolver\TaxRateResolverInterface;
 use ThreeBRS\SyliusPaymentFeePlugin\Model\AdjustmentInterface;
 use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
-use Webmozart\Assert\Assert;
 
 class OrderPaymentTaxesApplicator implements OrderTaxesApplicatorInterface
 {
-    /** @var CalculatorInterface */
-    private $calculator;
-
-    /** @var AdjustmentFactoryInterface */
-    private $adjustmentFactory;
-
-    /** @var TaxRateResolverInterface */
-    private $taxRateResolver;
-
     public function __construct(
-        CalculatorInterface $calculator,
-        AdjustmentFactoryInterface $adjustmentFactory,
-        TaxRateResolverInterface $taxRateResolver
+        private CalculatorInterface $calculator,
+        private AdjustmentFactoryInterface $adjustmentFactory,
+        private TaxRateResolverInterface $taxRateResolver,
     ) {
-        $this->calculator = $calculator;
-        $this->adjustmentFactory = $adjustmentFactory;
-        $this->taxRateResolver = $taxRateResolver;
     }
 
     private function getPaymentFee(OrderInterface $order): int
@@ -49,9 +36,6 @@ class OrderPaymentTaxesApplicator implements OrderTaxesApplicatorInterface
         return $paymentFee->getAmount();
     }
 
-    /**
-     * @inheritdoc
-     */
     public function apply(OrderInterface $order, ZoneInterface $zone): void
     {
         $paymentTotal = $this->getPaymentFee($order);
@@ -81,7 +65,6 @@ class OrderPaymentTaxesApplicator implements OrderTaxesApplicatorInterface
 
     private function addAdjustment(OrderInterface $order, int $taxAmount, string $label, bool $included): void
     {
-        /** @var AdjustmentInterface $paymentTaxAdjustment */
         $paymentTaxAdjustment = $this->adjustmentFactory
             ->createWithData(AdjustmentInterface::TAX_ADJUSTMENT, $label, $taxAmount, $included);
         $order->addAdjustment($paymentTaxAdjustment);
@@ -96,9 +79,8 @@ class OrderPaymentTaxesApplicator implements OrderTaxesApplicatorInterface
 
         assert($payment instanceof PaymentInterface);
 
-        /** @var PaymentMethodWithFeeInterface $method */
         $method = $payment->getMethod();
-        Assert::isInstanceOf($method, PaymentMethodWithFeeInterface::class);
+        \assert($method instanceof PaymentMethodWithFeeInterface);
 
         return $method;
     }
