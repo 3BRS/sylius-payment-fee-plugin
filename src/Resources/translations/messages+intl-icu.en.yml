@@ -1,13 +1,7 @@
 threebrs:
-
     ui:
         payment_charges: Payment charges
         paymentFee_total: Payment fees total
-
-    shop:
-        ui:
-            paymentFee_total: Payment fees total
-
     form:
         payment_method:
             calculator: Calculator
