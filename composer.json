@@ -46,8 +46,7 @@
     "symfony/http-foundation": "^5.4 || ^6.0",
     "symfony/http-kernel": "^5.4 || ^6.0",
     "symfony/intl": "^5.4 || ^6.0",
-    "symfony/web-profiler-bundle": "^5.4 || ^6.0",
-    "vimeo/psalm": "5.9.0"
+    "symfony/web-profiler-bundle": "^5.4 || ^6.0"
   },
   "conflict": {
     "babdev/pagerfanta-bundle": "<3.6.1",
@@ -90,8 +89,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\ThreeBRS\\SyliusPaymentFeePlugin\\": "tests/Application/src/",
-      "Tests\\ThreeBRS\\SyliusPaymentFeePlugin\\Behat\\": "tests/Behat/"
+      "Tests\\ThreeBRS\\SyliusPaymentFeePlugin\\": "tests/Application/src/"
     }
   },
   "exclude-from-classmap": [
