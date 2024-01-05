@@ -8,7 +8,7 @@
 	{% if paymentFeeAdjustmentTotal > 0 %}
 		<tr>
 			<td colspan="4" class="right aligned" id="shipping-total">
-				{{ 'threebrs.shop.ui.paymentFee_total'|trans }}:
+				{{ 'threebrs.ui.paymentFee_total'|trans }}:
 				<span {{ sylius_test_html_attribute('payment-total') }}>{{ money.convertAndFormat(paymentFeeAdjustmentTotal) }}</span>
 			</td>
 		</tr>

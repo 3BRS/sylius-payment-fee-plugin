@@ -13,8 +13,8 @@ final class RegisterFeeCalculatorsPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('threebrs.sylius_payment_fee_plugin.registry.payment_calculator')
-            || !$container->hasDefinition('threebrs.sylius_payment_fee_plugin.form_registry.payment_calculator')) {
+        if (!$container->hasDefinition('threebrs.sylius_payment_fee_plugin.registry.payment_calculator') ||
+            !$container->hasDefinition('threebrs.sylius_payment_fee_plugin.form_registry.payment_calculator')) {
             return;
         }
 
