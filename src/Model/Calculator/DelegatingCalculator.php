@@ -10,8 +10,9 @@ use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
 
 final class DelegatingCalculator implements DelegatingCalculatorInterface
 {
-    public function __construct(private ServiceRegistryInterface $registry)
-    {
+    public function __construct(
+        private ServiceRegistryInterface $registry,
+    ) {
     }
 
     public function calculate(PaymentInterface $subject): ?int
