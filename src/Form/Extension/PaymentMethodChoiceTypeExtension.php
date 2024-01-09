@@ -15,8 +15,9 @@ use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
 
 class PaymentMethodChoiceTypeExtension extends AbstractTypeExtension
 {
-    public function __construct(private ServiceRegistryInterface $calculatorRegistry)
-    {
+    public function __construct(
+        private ServiceRegistryInterface $calculatorRegistry,
+    ) {
     }
 
     /**
@@ -55,8 +56,6 @@ class PaymentMethodChoiceTypeExtension extends AbstractTypeExtension
 
     public static function getExtendedTypes(): iterable
     {
-        return [
-            PaymentMethodChoiceType::class,
-        ];
+        return [PaymentMethodChoiceType::class];
     }
 }

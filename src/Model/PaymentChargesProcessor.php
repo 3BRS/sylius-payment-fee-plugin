@@ -13,8 +13,10 @@ use ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculatorInterfa
 
 final class PaymentChargesProcessor implements OrderProcessorInterface
 {
-    public function __construct(private FactoryInterface $adjustmentFactory, private DelegatingCalculatorInterface $paymentChargesCalculator)
-    {
+    public function __construct(
+        private FactoryInterface $adjustmentFactory,
+        private DelegatingCalculatorInterface $paymentChargesCalculator,
+    ) {
     }
 
     public function process(BaseOrderInterface $order): void

@@ -19,12 +19,16 @@ final class RegisterFeeCalculatorsPass implements CompilerPassInterface
         }
 
         $registry = $container->getDefinition('threebrs.sylius_payment_fee_plugin.registry.payment_calculator');
-        $formTypeRegistry = $container->getDefinition('threebrs.sylius_payment_fee_plugin.form_registry.payment_calculator');
+        $formTypeRegistry = $container->getDefinition(
+            'threebrs.sylius_payment_fee_plugin.form_registry.payment_calculator',
+        );
         $calculators = [];
 
         foreach ($container->findTaggedServiceIds(DelegatingCalculator::class) as $id => $attributes) {
             if (!isset($attributes[0]['calculator'], $attributes[0]['label'])) {
-                throw new \InvalidArgumentException('Tagged payment fee calculators needs to have `calculator` and `label` attributes.');
+                throw new \InvalidArgumentException(
+                    'Tagged payment fee calculators needs to have `calculator` and `label` attributes.',
+                );
             }
 
             $name = $attributes[0]['calculator'];

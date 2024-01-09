@@ -13,8 +13,9 @@ final class CalculatorChoiceType extends AbstractType
     /**
      * @param array<mixed> $calculators
      */
-    public function __construct(private array $calculators)
-    {
+    public function __construct(
+        private array $calculators,
+    ) {
     }
 
     /**
