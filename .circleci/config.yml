@@ -7,30 +7,27 @@ workflows:
                     name: php-<<matrix.php_version>>-sylius-<< matrix.sylius_version >>-symfony-<< matrix.symfony_version >>
                     matrix:
                         parameters:
-                            php_version:
-                                - "8.0"
-                            sylius_version:
-                                - "1.11"
-                            symfony_version:
-                                - "5.4"
+                            sylius_version: [ "1.11" ]
+                            php_version: [ "8.0" ]
+                            symfony_version: [ "5.4" ]
+    sylius1.11-php8.1+:
+        jobs:
+            - build:
+                  name: php-<<matrix.php_version>>-sylius-<< matrix.sylius_version >>-symfony-<< matrix.symfony_version >>
+                  matrix:
+                      parameters:
+                          sylius_version: [ "1.11" ]
+                          php_version: [ "8.1", "8.2", "8.3" ]
+                          symfony_version: [ "5.4" ]
     sylius1.12-php8.0:
         jobs:
             -   build:
                     name: php-<<matrix.php_version>>-sylius-<< matrix.sylius_version >>-symfony-<< matrix.symfony_version >>
                     matrix:
                         parameters:
-                            php_version: [ "8.0" ]
                             sylius_version: [ "1.12" ]
+                            php_version: [ "8.0" ]
                             symfony_version: [ "5.4", "6.0" ]
-    sylius1.11-php8.1+:
-        jobs:
-            -   build:
-                    name: php-<<matrix.php_version>>-sylius-<< matrix.sylius_version >>-symfony-<< matrix.symfony_version >>
-                    matrix:
-                        parameters:
-                            sylius_version: [ "1.11" ]
-                            symfony_version: [ "5.4" ]
-                            php_version: [ "8.1", "8.2" ]
     sylius1.12-php8.1+:
         jobs:
             -   build:
@@ -38,7 +35,7 @@ workflows:
                     matrix:
                         parameters:
                             sylius_version: [ "1.12" ]
-                            php_version: [ "8.1", "8.2" ]
+                            php_version: [ "8.1", "8.2", "8.3" ]
                             symfony_version: [ "5.4", "6.0", "6.1", "6.2", "6.3", "6.4" ]
 
 jobs:
@@ -61,14 +58,14 @@ jobs:
                     MYSQL_PASSWORD: pass
 
         steps:
-          - checkout
+            - checkout
             # to avoid installing different package "Note, selecting 'cmdtest' instead of 'yarn'"
             -   run: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
             -   run: echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
             -   run: curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
             -   run: apt-get update
-              # netcat to get 'nc' command for waiting for database
-            -   run: apt-get install -y nodejs yarn mariadb-client netcat
+                # netcat to get 'nc' command for waiting for database
+            -   run: apt-get install -y nodejs yarn mariadb-client netcat-traditional
             -   run: composer self-update
 
             # Sylius & Symfony in current matrix versions
@@ -77,8 +74,8 @@ jobs:
 
             -   run:
                     name: Wait for database
-                    command: timeout 60s bash -c -- 'while ! nc -z localhost 3306; do sleep 0.1; done' \
-                        && timeout 30s bash -c -- 'mysql --user=sylius --password=pass --host=localhost --port=3306 -e "exit"'
+                    command: timeout 60s bash -c -- 'while ! nc -z 127.0.0.1 3306; do sleep 0.1; done' \
+                        && timeout 30s bash -c -- 'mysql --user=sylius --password=pass --host=127.0.0.1 --port=3306 -e "exit"'
 
             # COMPOSER PREFER LOWEST (oldest possible) #
             # has to delete vendor for next test with different libraries version to avoid Composer error 'Failed to extract...' if vendor dir cache does not exist
@@ -86,10 +83,11 @@ jobs:
             -   run: composer update --no-interaction --prefer-lowest --no-plugins
             -   run: yarn --cwd tests/Application install
             -   run: yarn --cwd tests/Application build
-            -   run: (cd tests/Application && bin/console doctrine:database:create --if-not-exists --env=test -vvv)
-            -   run: (cd tests/Application && bin/console doctrine:schema:update --force --env=test -vvv)
             -   run: (cd tests/Application && bin/console cache:clear --env=test -vvv)
             -   run: (cd tests/Application && bin/console cache:warmup --env=test -vvv)
+            -   run: (cd tests/Application && bin/console doctrine:database:create --if-not-exists --env=test -vvv)
+            -   run: (cd tests/Application && bin/console doctrine:schema:update --force --complete --no-interaction --env=test -vvv)
+            -   run: (cd tests/Application && bin/console doctrine:migrations:sync-metadata-storage --no-interaction --env=test -vvv)
             -   run:
                     name: Behat
                     environment:
@@ -104,7 +102,7 @@ jobs:
             -   run: yarn --cwd tests/Application install
             -   run: yarn --cwd tests/Application build
             -   run: (cd tests/Application && bin/console doctrine:database:create --if-not-exists --env=test -vvv)
-            -   run: (cd tests/Application && bin/console doctrine:schema:update --force --env=test -vvv)
+            -   run: (cd tests/Application && bin/console doctrine:schema:update --force --complete --no-interaction --env=test -vvv)
             -   run: (cd tests/Application && bin/console cache:clear --env=test -vvv)
             -   run: (cd tests/Application && bin/console cache:warmup --env=test -vvv)
             -   run: APP_ENV=test bin/behat
