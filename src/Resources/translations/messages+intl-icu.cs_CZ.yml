@@ -1,7 +1,9 @@
 threebrs:
     ui:
         payment_charges: Poplatky
+        # deprecated, use payment_fee_total instead
         paymentFee_total: Poplatky celkem
+        payment_fee_total: Poplatky celkem
     form:
         payment_method:
             calculator: Calculator
