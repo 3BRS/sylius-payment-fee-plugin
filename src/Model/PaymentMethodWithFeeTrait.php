@@ -15,6 +15,7 @@ trait PaymentMethodWithFeeTrait
 
     /**
      * @ORM\ManyToOne(targetEntity="Sylius\Component\Taxation\Model\TaxCategoryInterface")
+     *
      * @ORM\JoinColumn(name="tax_category_id")
      */
     #[ORM\ManyToOne(targetEntity: TaxCategoryInterface::class)]

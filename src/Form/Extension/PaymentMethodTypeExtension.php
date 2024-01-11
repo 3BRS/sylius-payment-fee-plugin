@@ -75,12 +75,12 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                 continue;
             }
 
-            $form = $builder->create(
+            $formBuilder = $builder->create(
                 'calculatorConfiguration',
                 $this->formTypeRegistry->get($calculatorType, 'default'),
             );
 
-            $prototypes['calculators'][$name] = $form->getForm();
+            $prototypes['calculators'][$name] = $formBuilder->getForm();
         }
 
         $builder->setAttribute('prototypes', $prototypes);

@@ -5,7 +5,7 @@
 	{{ form_row(form.calculator) }}
 	{% for name, calculatorConfigurationPrototype in form.vars.prototypes %}
 		<div id="{{ form.calculator.vars.id }}_{{ name }}" data-container=".calculatorConfiguration"
-			 data-prototype="{{ form_widget(calculatorConfigurationPrototype)|e }}">
+			 data-prototype="{{ form_widget(calculatorConfigurationPrototype)|escape }}">
 		</div>
 	{% endfor %}
 	<div class="ui segment calculatorConfiguration">
