@@ -1,31 +1,31 @@
 phpstan:
-	APP_ENV=test bin/phpstan.sh
+	bin/phpstan.sh
 
 ecs:
-	APP_ENV=test bin/ecs.sh
+	bin/ecs.sh
 
 behat-js:
-	APP_ENV=test APP_SUPPRESS_DEPRECATED_ERRORS=1 bin/behat --colors --strict --no-interaction -vvv -f progress
+	APP_SUPPRESS_DEPRECATED_ERRORS=1 bin/behat --colors --strict --no-interaction -vvv -f progress
 
 install:
 	composer install --no-interaction --no-scripts
 
 backend:
-	APP_ENV=test tests/Application/bin/console doctrine:database:create --if-not-exists --no-interaction
-	APP_ENV=test tests/Application/bin/console doctrine:migrations:sync-metadata-storage --no-interaction
-	APP_ENV=test tests/Application/bin/console doctrine:schema:update --force --complete --no-interaction
-	APP_ENV=test tests/Application/bin/console sylius:install --no-interaction
-	APP_ENV=test tests/Application/bin/console sylius:fixtures:load default --no-interaction
+	bin/console doctrine:database:create --if-not-exists --no-interaction
+	bin/console doctrine:migrations:sync-metadata-storage --no-interaction
+	bin/console doctrine:schema:update --force --complete --no-interaction
+	bin/console sylius:install --no-interaction
+	bin/console sylius:fixtures:load default --no-interaction
 
 frontend:
 	(cd tests/Application && yarn install --pure-lockfile)
 	(cd tests/Application && GULP_ENV=prod yarn build)
 
 behat:
-	APP_ENV=test bin/behat --colors --strict --no-interaction -vvv -f progress
+	bin/behat --colors --strict --no-interaction -vvv -f progress
 
 lint:
-	APP_ENV=test bin/symfony-lint.sh
+	bin/symfony-lint.sh
 
 init: install backend frontend
 

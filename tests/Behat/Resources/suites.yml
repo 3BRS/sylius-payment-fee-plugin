@@ -1,0 +1,3 @@
+imports:
+    - suites/admin_can_set_payment_fee.yml
+    - suites/select_payment_with_fee_on_checkout.yml
