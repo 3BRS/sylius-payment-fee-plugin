@@ -15,17 +15,30 @@ Feature: Admin can set fee to a payment method in admin panel
 		When I am logged in as an administrator
 		Then I should see the payment method "UPS" in the list
 		And I should see the payment method "Cash on Delivery" in the list
-		And I want to modify the "Cash on Delivery" payment method
+
+		When I want to modify the "Cash on Delivery" payment method
 		Then I should see that payment method "Cash on Delivery" has no fee
-		When I set fee "2.00" to "Cash on Delivery" payment method
+
+		When I want to modify the "Cash on Delivery" payment method
+		And I set fee "2.00" to "Cash on Delivery" payment method
 		Then I should see that payment method "Cash on Delivery" has fee "2.00"
+		And I want to modify the "UPS" payment method
 		And I should see that payment method "UPS" has no fee
-		When I set fee "0.00" to "Cash on Delivery" payment method
+
+		When I want to modify the "Cash on Delivery" payment method
+		And I set fee "0.00" to "Cash on Delivery" payment method
 		Then I should see that payment method "Cash on Delivery" has no fee
+		And I want to modify the "UPS" payment method
 		And I should see that payment method "UPS" has no fee
-		When I set fee "999.00" to "Cash on Delivery" payment method
+
+		When I want to modify the "Cash on Delivery" payment method
+		And I set fee "999.00" to "Cash on Delivery" payment method
 		Then I should see that payment method "Cash on Delivery" has fee "999.00"
+		And I want to modify the "UPS" payment method
 		And I should see that payment method "UPS" has no fee
-		When I remove fee from "Cash on Delivery" payment method
+
+		When I want to modify the "Cash on Delivery" payment method
+		And I remove fee from "Cash on Delivery" payment method
 		Then I should see that payment method "Cash on Delivery" has no fee
+		And I want to modify the "UPS" payment method
 		And I should see that payment method "UPS" has no fee

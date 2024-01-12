@@ -30,7 +30,7 @@ final class UpdatePaymentPage extends BasePaymentMethodUpdatePage implements Upd
     protected function getDefinedElements(): array
     {
         return array_merge(parent::getDefinedElements(), [
-            self::AMOUNT_INPUT => 'sylius_payment_method_calculatorConfiguration_%channel%_amount',
+            self::AMOUNT_INPUT => '#sylius_payment_method_calculatorConfiguration_%channel%_amount',
         ]);
     }
 }
