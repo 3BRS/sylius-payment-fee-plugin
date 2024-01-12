@@ -13,7 +13,7 @@ default:
 
         Behat\MinkExtension:
             files_path: "%paths.base%/vendor/sylius/sylius/src/Sylius/Behat/Resources/fixtures/"
-            base_url: "https://127.0.0.1:8080/"
+            base_url: https://app.docker:8081
             default_session: symfony
             javascript_session: chrome_headless
             sessions:
@@ -21,8 +21,9 @@ default:
                     symfony: ~
                 chrome_headless:
                     chrome:
-                        api_url: http://127.0.0.1:9222
+                        api_url: http://chrome.docker:9222 # from docker with PHP to docker with Chrome, see docker-compose.yml services names
                         validate_certificate: false
+                        socket_timeout: 10
                 chrome:
                     selenium2:
                         browser: chrome

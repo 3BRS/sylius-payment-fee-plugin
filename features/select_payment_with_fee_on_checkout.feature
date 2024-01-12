@@ -1,8 +1,8 @@
 @select_payment_with_fee_on_checkout
-Feature: Selecting free of charge payment in checkout
-	In order to select shipping method without a fee to pay
+Feature: Selecting charged payment in checkout
+	In order to payment method with or without fee to pay
 	As a Customer
-	I want to select free of charge shipping method and see in final checkout step that I don't have to pay for shipping
+	I want to select payment method and see in final checkout step if I have to pay for that payment method
 
 	Background:
 		Given the store operates on a channel named "3BRS Channel"
@@ -24,6 +24,7 @@ Feature: Selecting free of charge payment in checkout
 		Then I should be on the checkout shipping step
 		When I select "DHL" shipping method
 		And I complete the shipping step
+		Then I should be on the checkout payment step
 		And I select "CSOB" payment method
 		And I complete the payment step
 		Then I should be on the checkout complete step
@@ -41,10 +42,12 @@ Feature: Selecting free of charge payment in checkout
 		Then I should be on the checkout shipping step
 		When I select "DHL" shipping method
 		And I complete the shipping step
+		Then I should be on the checkout payment step
 		And I select "Cash on delivery" payment method
 		And I complete the payment step
 		Then I should be on the checkout complete step
 		And my order shipping should be "$5.00"
+		And I should see payment fee total
 		And my order payment fee should be "$2.00"
 		And my order total should be "$26.99"
 		When I confirm my order

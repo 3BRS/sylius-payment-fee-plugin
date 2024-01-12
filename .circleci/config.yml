@@ -67,6 +67,8 @@ jobs:
                 # netcat to get 'nc' command for waiting for database
             -   run: apt-get install -y nodejs yarn mariadb-client netcat-traditional
             -   run: composer self-update
+            -   run: curl -sS https://get.symfony.com/cli/installer | bash -s -- --install-dir="$(pwd)" && mv "$(pwd)"/symfony /usr/local/bin/symfony
+            -   run: symfony server:ca:install
 
             # Sylius & Symfony in current matrix versions
             -   run: composer require "sylius/sylius:<< parameters.sylius_version >>.*" --no-interaction --no-update --no-scripts

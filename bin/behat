@@ -1,1 +1,7 @@
-../vendor/bin/behat
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+XDEBUG_MODE_BEHAT="${XDEBUG_MODE_BEHAT:=$XDEBUG_MODE}"
+
+( XDEBUG_MODE="${XDEBUG_MODE_BEHAT}" "${DIR}/../vendor/bin/behat" "$@" )

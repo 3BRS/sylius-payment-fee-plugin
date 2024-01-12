@@ -3,7 +3,7 @@ default:
         select_payment_with_fee_on_checkout:
             contexts:
                 - 3brs.sylius.payment_fee_plugin.behat.context.setup.payment_method
-                - 3brs.sylius.payment_fee_plugin.behat.context.ui.checkout.checkout_complete
+                - 3brs.sylius.payment_fee_plugin.behat.context.ui.shop.checkout.checkout_complete
 
                 - sylius.behat.context.hook.doctrine_orm
 

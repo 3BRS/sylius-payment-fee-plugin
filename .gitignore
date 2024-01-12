@@ -4,6 +4,8 @@
 /composer.lock
 /symfony.lock
 
+/bin/symfony
+
 /etc/build/*
 !/etc/build/.gitkeep
 
