@@ -7,10 +7,10 @@ then
     if command -v symfony &> /dev/null
     then
         # use local symfony
-        ln -s "$(which symfony)" symfony
+        ln -s "$(which symfony)" "${DIR}"/symfony
     else
       # download symfony
-      curl -sS https://get.symfony.com/cli/installer | bash -s -- --install-dir="$DIR"
+      curl -sS https://get.symfony.com/cli/installer | bash -s -- --install-dir="${DIR}"
     fi
 fi
 
@@ -20,6 +20,7 @@ then
 fi
 
 BEHAT_APP_ENV=${BEHAT_APP_ENV:=test}
+BEHAT_APP_PORT=${BEHAT_APP_PORT:=8081}
 
 SYMFONY_SERVER_START_COMMAND="APP_ENV=${BEHAT_APP_ENV} ${DIR}/symfony server:start --port=${BEHAT_APP_PORT:=8081} --dir=${DIR}/../tests/Application/public --daemon"
 
