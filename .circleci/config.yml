@@ -49,6 +49,7 @@ jobs:
                 type: string
         docker:
             -   image: webdevops/php-nginx:<< parameters.php_version >>
+                hostname: app.docker # same as in behat.yml.dist
                 environment:
                     - DATABASE_URL=mysql://root:pass_root@127.0.0.1:3306/3brs_sylius_payment_restriction_plugin_%kernel.environment%?serverVersion=8.0
             -   image: cimg/mysql:8.0
@@ -56,6 +57,10 @@ jobs:
                     MYSQL_ROOT_PASSWORD: pass_root
                     MYSQL_USER: sylius
                     MYSQL_PASSWORD: pass
+            -   image: zenika/alpine-chrome
+                hostname: chrome.docker# same as in behat.yml.dist
+                shm_size: "2gb"
+                command: "--enable-automation --disable-gpu --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --disable-translate --disable-extensions --no-sandbox --headless --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' --disable-proxy-certificate-handler"
 
         steps:
             - checkout
