@@ -99,8 +99,10 @@ jobs:
             -   run:
                     name: Behat
                     environment:
-                        APP_SUPPRESS_DEPRECATED_ERRORS: 1
+                        # Circle CI forces all containers to be on localhost only, does not support hostnames
+                        BEHAT_PARAMS: '{"extensions":{"Behat\\MinkExtension":{"base_url":"https:\/\/localhost:8081","sessions":{"chrome_headless":{"chrome":{"api_url":"http:\/\/localhost:9222"}}}}}}'
                         APP_ENV: test
+                        APP_SUPPRESS_DEPRECATED_ERRORS: 1
                     # suppress deprecation errors like 'Function utf8_encode() is deprecated in vendor/egulias/email-validator/src/EmailLexer.php line 275' converted to fatal
                     command: bin/behat-js
             -   run: APP_ENV=test bin/phpstan.sh

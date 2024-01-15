@@ -13,7 +13,7 @@ default:
 
         Behat\MinkExtension:
             files_path: "%paths.base%/vendor/sylius/sylius/src/Sylius/Behat/Resources/fixtures/"
-            base_url: https://app.docker:8081
+            # base_url: https://app.docker:8081 # passed via BEHAT_PARAMS env variable
             default_session: symfony
             javascript_session: chrome_headless
             sessions:
@@ -21,7 +21,7 @@ default:
                     symfony: ~
                 chrome_headless:
                     chrome:
-                        api_url: http://chrome.docker:9222 # from docker with PHP to docker with Chrome, see docker-compose.yml services names
+                        # api_url: http://chrome.docker:9222 # from docker with PHP to docker with Chrome, see docker-compose.yml services names, passed via BEHAT_PARAMS env variable
                         validate_certificate: false
                         socket_timeout: 10
                 chrome:
@@ -55,13 +55,3 @@ default:
         FriendsOfBehat\SuiteSettingsExtension:
             paths:
                 - "features"
-
-circle-ci:
-    # Circe CI uses localhost only, no Docker hostnames
-    extensions:
-        Behat\MinkExtension:
-            base_url: https://localhost:8081
-            sessions:
-                chrome_headless:
-                    chrome:
-                        api_url: http://localhost:9222
