@@ -60,10 +60,11 @@ services:
 #        networks:
 #            - sylius
 
-    chrome.docker:
+    chrome:
         # Thank you https://pplotka.dev/post/sylius-behat-scenarios-in-chrome-headless-inside-docker/
         image: zenika/alpine-chrome
         container_name: sylius-payment-fee-plugin-chrome
+        hostname: chrome.docker
         shm_size: "2gb"
         command: "--enable-automation --disable-gpu --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --disable-translate --disable-extensions --no-sandbox --headless --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' --disable-proxy-certificate-handler"
         networks:

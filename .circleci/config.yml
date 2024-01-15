@@ -49,14 +49,17 @@ jobs:
                 type: string
         docker:
             -   image: webdevops/php-nginx:<< parameters.php_version >>
+                name: app
                 environment:
-                    - DATABASE_URL=mysql://root:pass_root@127.0.0.1:3306/3brs_sylius_payment_restriction_plugin_%kernel.environment%?serverVersion=8.0
+                    - DATABASE_URL=mysql://root:pass_root@database:3306/3brs_sylius_payment_restriction_plugin_%kernel.environment%?serverVersion=8.0
             -   image: cimg/mysql:8.0
+                name: database
                 environment:
                     MYSQL_ROOT_PASSWORD: pass_root
                     MYSQL_USER: sylius
                     MYSQL_PASSWORD: pass
             -   image: zenika/alpine-chrome
+                name: chrome
                 command: "--enable-automation --disable-gpu --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --disable-translate --disable-extensions --no-sandbox --headless --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' --disable-proxy-certificate-handler"
 
         steps:
@@ -78,12 +81,12 @@ jobs:
 
             -   run:
                     name: Wait for database
-                    command: timeout 60s bash -c -- 'while ! nc -z 127.0.0.1 3306; do sleep 0.1; done' \
-                        && timeout 30s bash -c -- 'mysql --user=sylius --password=pass --host=127.0.0.1 --port=3306 -e "exit"'
+                    command: timeout 60s bash -c -- 'while ! nc -z database 3306; do sleep 0.1; done' \
+                        && timeout 30s bash -c -- 'mysql --user=sylius --password=pass --host=database --port=3306 -e "exit"'
 
             -   run:
                     name: Wait for Chrome
-                    command: timeout 60s bash -c -- 'while ! nc -z 127.0.0.1 9222; do sleep 0.1; done'
+                    command: timeout 60s bash -c -- 'while ! nc -z chrome 9222; do sleep 0.1; done'
 
             # COMPOSER PREFER LOWEST (oldest possible) #
             # has to delete vendor for next test with different libraries version to avoid Composer error 'Failed to extract...' if vendor dir cache does not exist
@@ -104,11 +107,11 @@ jobs:
                             {
                                 "extensions": {
                                     "Behat\\MinkExtension": {
-                                        "base_url": "https://localhost:8081/",
+                                        "base_url": "https://app:8081/",
                                         "sessions": {
                                             "chrome_headless": {
                                                 "chrome": {
-                                                    "api_url": "http://localhost:9222"
+                                                    "api_url": "http://chrome:9222"
                                                 }
                                             }
                                         }
@@ -118,7 +121,7 @@ jobs:
                         APP_ENV: test
                         APP_SUPPRESS_DEPRECATED_ERRORS: 1
                     # suppress deprecation errors like 'Function utf8_encode() is deprecated in vendor/egulias/email-validator/src/EmailLexer.php line 275' converted to fatal
-                    command: bin/behat-js -vvv
+                    command: bin/behat-js
             -   run: APP_ENV=test bin/phpstan.sh
             -   run: APP_ENV=test bin/ecs.sh --clear-cache
             -   run: APP_ENV=test bin/symfony-lint.sh

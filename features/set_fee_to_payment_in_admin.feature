@@ -13,6 +13,7 @@ Feature: Admin can set fee to a payment method in admin panel
 	@ui @javascript
 	Scenario: Set fee to a payment method in admin panel
 		When I am logged in as an administrator
+		And I browse payment methods
 		Then I should see the payment method "UPS" in the list
 		And I should see the payment method "Cash on Delivery" in the list
 
