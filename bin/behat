@@ -2,6 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+XDEBUG_MODE="${XDEBUG_MODE:=off}"
 XDEBUG_MODE_BEHAT="${XDEBUG_MODE_BEHAT:=$XDEBUG_MODE}"
 
 ( XDEBUG_MODE="${XDEBUG_MODE_BEHAT}" "${DIR}/../vendor/bin/behat" "$@" )
