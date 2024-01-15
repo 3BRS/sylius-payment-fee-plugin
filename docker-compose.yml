@@ -18,7 +18,7 @@ services:
             #            XDEBUG_MODE: "profile"
             XDEBUG_MODE_BEHAT: "off"
             PHP_IDE_CONFIG: "serverName=3brsSyliusPaymentFeePlugin"
-            BEHAT_PARAMS: '{"extensions":{"Behat\\MinkExtension":{"base_url":"https://app.docker:8081","sessions":{"chrome_headless":{"chrome":{"api_url":"http://chrome.docker:9222"}}}}}}'
+            BEHAT_PARAMS: '{"extensions":{"Behat\\MinkExtension":{"base_url":"https://app.docker:8081/","sessions":{"chrome_headless":{"chrome":{"api_url":"http://chrome.docker:9222"}}}}}}'
         volumes:
             - ./:/app
             - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
