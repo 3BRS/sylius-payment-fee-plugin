@@ -41,8 +41,10 @@ install-symfony:
 server-certificate:
 	sudo ./bin/symfony server:ca:install
 
+BEHAT_APP_PORT ?= 8082
+
 server-start:
-	./bin/symfony server:start --port=8081 --dir=tests/Application/public --daemon
+	./bin/symfony server:start --port=$(BEHAT_APP_PORT) --dir=tests/Application/public --daemon
 
 server-stop:
 	./bin/symfony server:stop --dir=tests/Application/public
