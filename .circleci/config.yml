@@ -100,6 +100,7 @@ jobs:
                     name: Behat
                     environment:
                         APP_SUPPRESS_DEPRECATED_ERRORS: 1
+                        APP_ENV: test
                     # suppress deprecation errors like 'Function utf8_encode() is deprecated in vendor/egulias/email-validator/src/EmailLexer.php line 275' converted to fatal
                     command: bin/behat-js
             -   run: APP_ENV=test bin/phpstan.sh

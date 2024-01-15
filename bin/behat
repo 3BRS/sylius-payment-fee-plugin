@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 XDEBUG_MODE="${XDEBUG_MODE:=off}"
 XDEBUG_MODE_BEHAT="${XDEBUG_MODE_BEHAT:=$XDEBUG_MODE}"
 
-( XDEBUG_MODE="${XDEBUG_MODE_BEHAT}" "${DIR}/../vendor/bin/behat" "$@" )
+PHP_ERROR_REPORTING='E_ALL'
+if [ -n "${APP_SUPPRESS_DEPRECATED_ERRORS}" ]; then
+  PHP_ERROR_REPORTING='E_ALL^E_DEPRECATED & ~E_USER_DEPRECATED & ~E_STRICT'
+fi
+
+(XDEBUG_MODE="${XDEBUG_MODE_BEHAT}" php --define error_reporting="${PHP_ERROR_REPORTING}" "${DIR}/../vendor/bin/behat" "$@")
