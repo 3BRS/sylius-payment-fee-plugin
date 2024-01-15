@@ -1,2 +1,2 @@
 # To allow 'symfony server:ca:install' which saves certificate to /etc/ssl/certs
-%symfony       ALL= NOPASSWD: /app/bin/symfony
+%symfony       ALL= NOPASSWD: /app/bin/symfony, /usr/local/bin/symfony, /usr/bin/symfony

@@ -8,7 +8,7 @@ ENV LC_ALL=C.UTF-8
 ENV XDEBUG_MODE=off
 
 RUN apt-get update
-RUN apt-get install -y supervisor curl unzip git make iputils-ping sudo software-properties-common # to get command add-apt-repository
+RUN apt-get install -y supervisor curl unzip git make iputils-ping sudo vim software-properties-common # to get command add-apt-repository
 
 RUN add-apt-repository ppa:ondrej/php \
     && add-apt-repository ppa:ondrej/nginx
