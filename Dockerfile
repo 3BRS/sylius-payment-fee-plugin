@@ -1,3 +1,17 @@
+FROM zenika/alpine-chrome AS chrome
+
+USER root
+RUN apk add --no-cache openssh openrc sudo
+RUN echo "chrome:Docker!" | chpasswd
+# allow root login via ssh using password
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN ssh-keygen -A
+
+COPY ./.docker/chrome/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
 FROM sylius/standard:1.11-traditional AS sylius
 
 FROM ubuntu:22.04
@@ -8,7 +22,8 @@ ENV LC_ALL=C.UTF-8
 ENV XDEBUG_MODE=off
 
 RUN apt-get update
-RUN apt-get install -y supervisor curl unzip git make iputils-ping sudo vim software-properties-common # to get command add-apt-repository
+# 'software-properties-common' to get command add-apt-repository
+RUN apt-get install -y supervisor curl unzip git make iputils-ping sudo vim software-properties-common openssh-client
 
 RUN add-apt-repository ppa:ondrej/php \
     && add-apt-repository ppa:ondrej/nginx
@@ -22,9 +37,14 @@ RUN npm install -g yarn && npm cache clean --force
 
 RUN apt-get install -y php${PHP_VERSION} php${PHP_VERSION}-apcu php${PHP_VERSION}-calendar php${PHP_VERSION}-common php${PHP_VERSION}-cli php${PHP_VERSION}-ctype php${PHP_VERSION}-curl php${PHP_VERSION}-dom php${PHP_VERSION}-exif php${PHP_VERSION}-fpm php${PHP_VERSION}-gd php${PHP_VERSION}-intl php${PHP_VERSION}-mbstring php${PHP_VERSION}-mysql php${PHP_VERSION}-opcache php${PHP_VERSION}-pdo php${PHP_VERSION}-pgsql php${PHP_VERSION}-sqlite php${PHP_VERSION}-xml php${PHP_VERSION}-xdebug php${PHP_VERSION}-xsl php${PHP_VERSION}-yaml php${PHP_VERSION}-zip
 
+# XDebug crashes on PHP 8.0.0 during some web requests and during symfony server:start (which uses PHP-FPM) with exited on signal 11 (SIGSEGV - core dumped)
+RUN phpdismod -s fpm xdebug
+# opcache causes for symfony server:start error during certificate verification 'remote error: tls: unknown certificate authority' (even after restart)
+RUN phpdismod opcache
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename composer
 RUN curl -sS https://get.symfony.com/cli/installer | bash -s -- --install-dir="$(pwd)" && mv "$(pwd)"/symfony /usr/local/bin/symfony
-RUN symfony server:ca:install
+# do not install symfony certificate via 'symfony server:ca:install' here as it causes problems with certificate verification 'remote error: tls: unknown certificate authority'
 
 RUN apt-get remove --purge -y software-properties-common \
     && apt-get clean \

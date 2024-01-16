@@ -21,12 +21,9 @@ services:
             BEHAT_PARAMS: '{"extensions":{"Behat\\MinkExtension":{"base_url":"https://app.docker:8081/","sessions":{"chrome_headless":{"chrome":{"api_url":"http://chrome.docker:9222"}}}}}}'
         volumes:
             - ./:/app
-            - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-#            - ./.docker/php/php.ini:/etc/php8/php.ini:delegated
-#            - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf:delegated
         ports:
-            - "${APP_HOST_MAPPING_PORT:-8080}:443" # http://localhost:8080
-            - "${APP_HOST_MAPPING_PORT:-8081}:8081" # http://localhost:8081
+            - "${APP_HOST_MAPPING_PORT:-8080}:443" # https://localhost:8080 for Nginx
+            - "${APP_HOST_MAPPING_PORT:-8081}:8081" # https://localhost:8081 for Symfony built-in test server
         depends_on:
             - mysql
 #            - postgres
@@ -62,14 +59,15 @@ services:
 
     chrome:
         # Thank you https://pplotka.dev/post/sylius-behat-scenarios-in-chrome-headless-inside-docker/
-        image: zenika/alpine-chrome
+        build:
+            context: .
+            target: chrome
         container_name: sylius-payment-fee-plugin-chrome
         hostname: chrome.docker
         shm_size: "2gb"
         command: "--enable-automation --disable-gpu --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --disable-translate --disable-extensions --no-sandbox --headless --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' --disable-proxy-certificate-handler"
         networks:
             - sylius
-
 
 networks:
     sylius:
