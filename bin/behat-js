@@ -1,55 +1,51 @@
 #!/usr/bin/env bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-if command -v symfony &> /dev/null
-then
+if command -v symfony &>/dev/null; then
   SYMFONY_BIN='symfony'
 else
-  if [ ! -e "${DIR}/symfony" ] # -e detects both regular file and symlink
-  then
+  if [ ! -e "${DIR}/symfony" ]; then # -e detects both regular file and symlink
     # download symfony
     curl -sS https://get.symfony.com/cli/installer | bash -s -- --install-dir="${DIR}"
   fi
   SYMFONY_BIN="${DIR}/symfony"
 fi
 
-if [ -z "${APP_ENV}" ] || [ "${APP_ENV}" != "test" ]
-then
-    ( >&2 echo -e "\033[33mAPP_ENV will be changed to 'test'\033[0m" 1>&2 )
+if [ -z "${APP_ENV}" ] || [ "${APP_ENV}" != "test" ]; then
+  (echo >&2 -e "\033[33mAPP_ENV will be changed to 'test'\033[0m" 1>&2)
 fi
 
 BEHAT_APP_ENV=${BEHAT_APP_ENV:=test}
 BEHAT_APP_PORT=${BEHAT_APP_PORT:=8081}
 
-SYMFONY_SERVER_START_COMMAND="APP_ENV=${BEHAT_APP_ENV} ${SYMFONY_BIN} server:start --port=${BEHAT_APP_PORT:=8081} --dir=${DIR}/../tests/Application/public --daemon"
+SYMFONY_SERVER_START_COMMAND="${SYMFONY_BIN} server:start --port=${BEHAT_APP_PORT:=8081} --dir=${DIR}/../tests/Application/public --daemon"
 
-SYMFONY_SERVER_START_OUTPUT=$( bash -c "$SYMFONY_SERVER_START_COMMAND" 2>&1 )
+SYMFONY_SERVER_START_OUTPUT=$(bash -c "$SYMFONY_SERVER_START_COMMAND" 2>&1)
 
-SYMFONY_SERVER_CA_WARNING=$( echo "${SYMFONY_SERVER_START_OUTPUT}" | grep "WARNING" | grep --only-matching "server:ca:install" )
+SYMFONY_SERVER_CA_WARNING=$(echo "${SYMFONY_SERVER_START_OUTPUT}" | grep "WARNING" | grep --only-matching "server:ca:install")
 
-SYMFONY_SERVER_RUNNING_WARNING=$( echo "${SYMFONY_SERVER_START_OUTPUT}" | grep "WARNING" | grep --only-matching "already running" )
+SYMFONY_SERVER_RUNNING_WARNING=$(echo "${SYMFONY_SERVER_START_OUTPUT}" | grep "WARNING" | grep --only-matching "already running")
 SYMFONY_SERVER_RUNNING_ON_HTTP_WARNING=''
-if [ -n "${SYMFONY_SERVER_RUNNING_WARNING}" ]
-then
-  SYMFONY_SERVER_RUNNING_ON_HTTP_WARNING=$( echo "${SYMFONY_SERVER_START_OUTPUT}" | grep "Listening on" | grep --only-matching "http://" )
+if [ -n "${SYMFONY_SERVER_RUNNING_WARNING}" ]; then
+  SYMFONY_SERVER_RUNNING_ON_HTTP_WARNING=$(echo "${SYMFONY_SERVER_START_OUTPUT}" | grep "Listening on" | grep --only-matching "http://")
 fi
 
-if [ -z "${SYMFONY_SERVER_CA_WARNING}" ] && [ -z "${SYMFONY_SERVER_RUNNING_ON_HTTP_WARNING}" ]
-then
+if [ -z "${SYMFONY_SERVER_CA_WARNING}" ] && [ -z "${SYMFONY_SERVER_RUNNING_ON_HTTP_WARNING}" ]; then
   echo "${SYMFONY_SERVER_START_OUTPUT}"
 else
-  if command -v sudo &> /dev/null
-  then
-    set -x
-    sudo "${SYMFONY_BIN}" server:ca:install
-  else
-    "${SYMFONY_BIN}" server:ca:install
+  SUDO=''
+  if command -v sudo &>/dev/null; then
+    # symfony requires root privileges to generate certificate, and same (root) user is required to use that certificate
+    SUDO='sudo'
   fi
+  # sudoers in Docker allows sudo without password for ./bin/symfony
+  "${SUDO}" "${SYMFONY_BIN}" server:ca:install
 
-  APP_ENV="${BEHAT_APP_ENV}" "${SYMFONY_BIN}" server:stop --dir="${DIR}"/../tests/Application/public 1>/dev/null
+  "${SYMFONY_BIN}" server:stop --dir="${DIR}"/../tests/Application/public 1>/dev/null
+  "${SUDO}" "${SYMFONY_BIN}" server:stop --dir="${DIR}"/../tests/Application/public 1>/dev/null
 
-  bash -c "$SYMFONY_SERVER_START_COMMAND"
+  bash -c "${SUDO} ${SYMFONY_SERVER_START_COMMAND}"
 fi
 
-( APP_ENV="${BEHAT_APP_ENV}" "${DIR}/behat" "$@" )
+(APP_ENV="${BEHAT_APP_ENV}" "${DIR}/behat" "$@")
