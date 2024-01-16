@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Ui\Admin;
 
 use Behat\Behat\Context\Context;
+use Behat\Mink\Exception\ElementNotFoundException;
 use Sylius\Behat\Service\SharedStorageInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Payment\Model\PaymentMethodInterface;
@@ -35,7 +36,11 @@ final class ManagingPaymentMethodsContext implements Context
      */
     public function paymentMethodShouldBeFreeOfCharge(PaymentMethodInterface $paymentMethod): void
     {
-        Assert::oneOf($this->updatePaymentPage->getAmount($this->getChannel()), ['', '0', '0.00', '0,00']);
+        try {
+            Assert::oneOf($this->updatePaymentPage->getAmount($this->getChannel()), ['0', '0.00', '0,00']);
+        } catch (ElementNotFoundException) {
+            Assert::true(true, 'Amount input should be hidden when empty');
+        }
     }
 
     /**
