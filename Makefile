@@ -5,13 +5,10 @@ phpstan:
 ecs:
 	bin/ecs.sh
 
-behat-js:
-	bin/behat-js --colors --strict --no-interaction -vvv -f progress --tags="@javascript"
-
 behat-no-js:
 	bin/behat --colors --strict --no-interaction -vvv -f progress --tags="~@javascript"
 
-behat:	behat-no-js	behat-js
+behat: behat-no-js
 
 install:
 	composer install --no-interaction --no-scripts

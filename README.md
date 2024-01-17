@@ -130,6 +130,11 @@ bin/ecs.sh
 vendor/bin/phpspec run
 ```
 
+#### Behat Debugging
+- use `-vvv` for verbose output `bin/behat -vvv`
+- see `etc/build/*.html` for output detail
+- check `tests/Application/var/log/test.log` for errors
+
 ### Opening Sylius with your plugin
 
 1. Install symfony CLI command: https://symfony.com/download
