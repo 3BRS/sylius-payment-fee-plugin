@@ -1,7 +1,9 @@
 threebrs:
     ui:
         payment_charges: Payment charges
+        # deprecated, use payment_fee_total instead
         paymentFee_total: Payment fees total
+        payment_fee_total: Payment fees total
     form:
         payment_method:
             calculator: Calculator

@@ -20,14 +20,15 @@ class FlatRateConfigurationType extends AbstractType
                 'amount',
                 MoneyType::class,
                 [
-                'label' => 'threebrs.form.payment_calculator.flat_rate_configuration.amount',
-                'constraints' => [
-                    new NotBlank(['groups' => ['sylius']]),
-                    new Type(['type' => 'integer', 'groups' => ['sylius']]),
+                    'label' => 'threebrs.form.payment_calculator.flat_rate_configuration.amount',
+                    'constraints' => [
+                        new NotBlank(['groups' => ['sylius']]),
+                        new Type(['type' => 'integer', 'groups' => ['sylius']]),
+                    ],
+                    'currency' => $options['currency'],
                 ],
-                'currency' => $options['currency'],
-            ],
-            );
+            )
+        ;
     }
 
     /**
@@ -36,13 +37,12 @@ class FlatRateConfigurationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setDefaults(
-                [
+            ->setDefaults([
                 'data_class' => null,
-            ],
-            )
+            ])
             ->setRequired('currency')
-            ->setAllowedTypes('currency', 'string');
+            ->setAllowedTypes('currency', 'string')
+        ;
     }
 
     /**

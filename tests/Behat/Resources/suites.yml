@@ -1,0 +1,4 @@
+imports:
+    - suites/set_fee_to_payment_in_admin.yml
+    - suites/select_payment_with_fee_on_checkout.yml
+    - ../../../vendor/sylius/sylius/src/Sylius/Behat/Resources/config/suites/ui/shipping/managing_shipping_methods.yml

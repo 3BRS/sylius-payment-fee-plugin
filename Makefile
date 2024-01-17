@@ -1,26 +1,44 @@
 phpstan:
-	APP_ENV=test bin/phpstan.sh
+	bin/console cache:warmup
+	bin/phpstan.sh
 
 ecs:
-	APP_ENV=test bin/ecs.sh
+	bin/ecs.sh
+
+behat-no-js:
+	bin/behat --colors --strict --no-interaction -vvv -f progress --tags="~@javascript"
+
+behat: behat-no-js
 
 install:
 	composer install --no-interaction --no-scripts
 
+backend-bare:
+	bin/console doctrine:database:create --if-not-exists --no-interaction
+	bin/console doctrine:migrations:sync-metadata-storage --no-interaction
+	bin/console doctrine:schema:update --force --complete --no-interaction
+
 backend:
-	APP_ENV=test tests/Application/bin/console sylius:install --no-interaction
-	APP_ENV=test tests/Application/bin/console doctrine:schema:update --force --complete --no-interaction
-	APP_ENV=test tests/Application/bin/console sylius:fixtures:load default --no-interaction
+	bin/console doctrine:database:create --if-not-exists --no-interaction
+	bin/console sylius:install --no-interaction # create schema and fixtures
+	# requires update of database schema due to plugin entities
+	bin/console doctrine:migrations:sync-metadata-storage --no-interaction
+	bin/console doctrine:schema:update --force --complete --no-interaction
+	bin/console sylius:fixtures:load default --no-interaction
 
 frontend:
 	(cd tests/Application && yarn install --pure-lockfile)
 	(cd tests/Application && GULP_ENV=prod yarn build)
 
 lint:
-	APP_ENV=test bin/symfony-lint.sh
+	bin/symfony-lint.sh
 
 init: install backend frontend
 
-ci: init phpstan ecs lint
+init-integration: install backend-bare frontend
+
+integration: init-integration behat
 
 static: install phpstan ecs lint
+
+ci: static integration

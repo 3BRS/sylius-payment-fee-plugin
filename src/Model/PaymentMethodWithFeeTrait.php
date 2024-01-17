@@ -10,6 +10,7 @@ use Sylius\Component\Taxation\Model\TaxCategoryInterface;
 trait PaymentMethodWithFeeTrait
 {
     /** @ORM\Column(name="calculator", type="text", nullable=true) */
+    #[ORM\Column(name: 'calculator', type: 'text', nullable: true)]
     protected ?string $calculator = null;
 
     /**
@@ -17,9 +18,12 @@ trait PaymentMethodWithFeeTrait
      *
      * @ORM\JoinColumn(name="tax_category_id")
      */
+    #[ORM\ManyToOne(targetEntity: TaxCategoryInterface::class)]
+    #[ORM\JoinColumn(name: 'tax_category_id')]
     protected ?TaxCategoryInterface $taxCategory = null;
 
     /** @ORM\Column(name="calculator_configuration", type="json", nullable=true) */
+    #[ORM\Column(name: 'calculator_configuration', type: 'json', nullable: true)]
     protected array $calculatorConfiguration = [];
 
     public function getCalculator(): ?string
@@ -34,7 +38,7 @@ trait PaymentMethodWithFeeTrait
 
     public function getCalculatorConfiguration(): array
     {
-        return $this->calculatorConfiguration ?? [];
+        return $this->calculatorConfiguration;
     }
 
     public function setCalculatorConfiguration(array $calculatorConfiguration): void

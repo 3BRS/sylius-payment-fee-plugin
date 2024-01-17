@@ -20,8 +20,8 @@
 			</div>
 		</td>
 		<td colspan="4" id="paymentFee-total" class="right aligned">
-			<strong>{{ 'threebrs.ui.paymentFee_total'|trans }}</strong>:
-			{{ money.format(order.getAdjustmentsTotal(paymentFeeAdjustment) ,order.currencyCode) }}
+			<strong>{{ 'threebrs.ui.payment_fee_total'|trans }}</strong>:
+			{{ money.format(order.getAdjustmentsTotal(paymentFeeAdjustment), order.currencyCode) }}
 		</td>
 	</tr>
 {% endif %}

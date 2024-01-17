@@ -21,8 +21,10 @@ use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
 
 class PaymentMethodTypeExtension extends AbstractTypeExtension
 {
-    public function __construct(private ServiceRegistryInterface $calculatorRegistry, private FormTypeRegistryInterface $formTypeRegistry)
-    {
+    public function __construct(
+        private ServiceRegistryInterface $calculatorRegistry,
+        private FormTypeRegistryInterface $formTypeRegistry,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -73,12 +75,12 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                 continue;
             }
 
-            $form = $builder->create(
+            $formBuilder = $builder->create(
                 'calculatorConfiguration',
                 $this->formTypeRegistry->get($calculatorType, 'default'),
             );
 
-            $prototypes['calculators'][$name] = $form->getForm();
+            $prototypes['calculators'][$name] = $formBuilder->getForm();
         }
 
         $builder->setAttribute('prototypes', $prototypes);
@@ -109,8 +111,6 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
 
     public static function getExtendedTypes(): iterable
     {
-        return [
-            SyliusPaymentMethodType::class,
-        ];
+        return [SyliusPaymentMethodType::class];
     }
 }
