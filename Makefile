@@ -11,7 +11,7 @@ behat-js:
 behat-no-js:
 	bin/behat --colors --strict --no-interaction -vvv -f progress --tags="~@javascript"
 
-behat:	behat-no-js	behat-js
+behat: behat-no-js behat-js
 
 install:
 	composer install --no-interaction --no-scripts
@@ -22,7 +22,8 @@ backend-bare:
 	bin/console doctrine:schema:update --force --complete --no-interaction
 
 backend:
-	bin/console sylius:install --no-interaction # create database, schema and fixtures
+	bin/console doctrine:database:create --if-not-exists --no-interaction
+	bin/console sylius:install --no-interaction # create schema and fixtures
 	# requires update of database schema due to plugin entities
 	bin/console doctrine:migrations:sync-metadata-storage --no-interaction
 	bin/console doctrine:schema:update --force --complete --no-interaction

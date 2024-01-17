@@ -8,8 +8,6 @@ use Tests\ThreeBRS\SyliusPaymentFeePlugin\Kernel;
 
 require dirname(__DIR__) . '/config/bootstrap.php';
 
-header('Strict-Transport-Security: max-age=0; includeSubDomains');
-
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
 

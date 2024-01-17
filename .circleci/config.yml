@@ -51,7 +51,7 @@ jobs:
             -   image: webdevops/php-nginx:<< parameters.php_version >>
                 name: app
                 environment:
-                    - DATABASE_URL=mysql://root:pass_root@database:3306/3brs_sylius_payment_restriction_plugin_%kernel.environment%?serverVersion=8.0
+                    - DATABASE_URL=mysql://root:pass_root@database:3306/3brs_sylius_payment_fee_plugin_%kernel.environment%?serverVersion=8.0
             -   image: cimg/mysql:8.0
                 name: database
                 environment:
@@ -121,7 +121,7 @@ jobs:
                         APP_ENV: test
                         APP_SUPPRESS_DEPRECATED_ERRORS: 1
                     # suppress deprecation errors like 'Function utf8_encode() is deprecated in vendor/egulias/email-validator/src/EmailLexer.php line 275' converted to fatal
-                    command: bin/behat-js
+                    command: php --define error_reporting=E_ALL^E_DEPRECATED bin/behat-js
             -   run: APP_ENV=test bin/phpstan.sh
             -   run: APP_ENV=test bin/ecs.sh --clear-cache
             -   run: APP_ENV=test bin/symfony-lint.sh
@@ -154,7 +154,7 @@ jobs:
                                     }
                                 }
                             }
-                    command: bin/behat-js -vvv
+                    command: bin/behat-js
             -   run: APP_ENV=test bin/phpstan.sh
             -   run: APP_ENV=test bin/ecs.sh --clear-cache
             -   run: APP_ENV=test bin/symfony-lint.sh
