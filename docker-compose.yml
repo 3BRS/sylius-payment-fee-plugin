@@ -10,7 +10,7 @@ services:
             YARN_CACHE_FOLDER: "/tmp"
             HOME: "/tmp"
             XDEBUG_CONFIG: "client_host=172.17.0.1 client_port=9003 remote_log=/tmp/xdebug.log"
-            XDEBUG_TRIGGER: "yes" # to start XDebug for EVERY request (use `export XDEBUG_TRIGGER: "yes"` to enable it in CLI and `unset XDEBUG_TRIGGER` to disable for CLI again - in browser use same-named variable in GET, POST or COOKIE, or legacy named via some browser extension). For a single shot can be used inline environment variable like `XDEBUG_TRIGGER=yes ./bin/console
+            XDEBUG_TRIGGER: "yes" # to start XDebug for EVERY request (use `export XDEBUG_TRIGGER: "yes"` to enable it in CLI and `unset XDEBUG_TRIGGER` to disable for CLI again - in browser use same-named variable in GET, POST or COOKIE, or legacy XDEBUG_SESSION via some browser extension). For a single shot can be used inline environment variable like `XDEBUG_TRIGGER=yes ./bin/console
             #            XDEBUG_MODE: "off"
             XDEBUG_MODE: "debug"
             #            XDEBUG_MODE: "profile"
@@ -18,10 +18,10 @@ services:
         volumes:
             - ./:/app
             - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-#            - ./.docker/php/php.ini:/etc/php8/php.ini:delegated
-#            - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf:delegated
+            - ./.docker/nginx/nginx-selfsigned.crt:/etc/nginx/ssl/nginx-selfsigned.crt
+            - ./.docker/nginx/nginx-selfsigned.key:/etc/nginx/ssl/nginx-selfsigned.key
         ports:
-            - "${APP_HOST_MAPPING_PORT:-8080}:80" # http://localhost:8080
+            - "${APP_HOST_MAPPING_PORT:-8080}:443" # https://localhost:8080 for Nginx
         depends_on:
             - mysql
 #            - postgres
