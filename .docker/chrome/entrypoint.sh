@@ -11,4 +11,4 @@ set -x
 # $* concatenates arguments into a single string
 CHROMIUM_FLAGS="${CHROMIUM_FLAGS} $*"
 CHROME_USER=chrome
-echo "${CHROMIUM_FLAGS}" | xargs sudo -u ${CHROME_USER} chromium-browser --headless {}
+echo "${CHROMIUM_FLAGS}" | xargs sudo -u ${CHROME_USER} chromium-browser --headless
