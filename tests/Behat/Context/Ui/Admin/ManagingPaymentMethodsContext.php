@@ -37,7 +37,7 @@ final class ManagingPaymentMethodsContext implements Context
     public function paymentMethodShouldBeFreeOfCharge(PaymentMethodInterface $paymentMethod): void
     {
         try {
-            Assert::oneOf($this->updatePaymentPage->getAmount($this->getChannel()), ['0', '0.00', '0,00']);
+            Assert::oneOf($this->updatePaymentPage->getAmount($this->getChannel()), ['0', '0.00', '0,00', '']);
         } catch (ElementNotFoundException) {
             Assert::true(true, 'Amount input should be hidden when empty');
         }

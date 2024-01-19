@@ -76,4 +76,4 @@ WORKDIR /app
 
 EXPOSE 80/tcp 443/tcp
 
-CMD bash -c 'if [ "$APP_ENV" == "exit" ]; then echo "Bye!" && exit 0; else bash /.docker/init-working-user.sh $(pwd) && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf; fi'
+CMD bash -c 'bash /.docker/init-working-user.sh /app && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf'

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euxo pipefail
-IFS=$'\n\t'
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-bin/console --no-interaction lint:yaml src
+# --parse-tags to parse custom service tags like 'tags: [!tagged app.myclass]'
+bin/console --no-interaction lint:yaml --parse-tags src
 bin/console --no-interaction lint:container
 bin/console --no-interaction lint:twig src --show-deprecations
+bin/console --no-interaction doctrine:schema:validate --skip-sync

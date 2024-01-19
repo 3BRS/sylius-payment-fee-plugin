@@ -12,10 +12,6 @@ else
   SYMFONY_BIN="${DIR}/symfony"
 fi
 
-if [ -z "${APP_ENV}" ] || [ "${APP_ENV}" != "test" ]; then
-  (echo >&2 -e "\033[33mAPP_ENV will be changed to 'test'\033[0m" 1>&2)
-fi
-
 BEHAT_APP_ENV=${BEHAT_APP_ENV:=test}
 BEHAT_APP_PORT=${BEHAT_APP_PORT:=8081}
 
