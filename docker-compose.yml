@@ -3,7 +3,7 @@ services:
         build: .
         hostname: app.docker
         environment:
-            APP_ENV: "test"
+            APP_ENV: "dev"
             DATABASE_URL: "mysql://root:mysql@mysql/sylius_%kernel.environment%?charset=utf8mb4"
 #            DATABASE_URL: "pgsql://root:postgres@postgres/sylius_%kernel.environment%?charset=utf8" # When using postgres
             PHP_DATE_TIMEZONE: "Europe/Prague"
@@ -18,7 +18,7 @@ services:
             XDEBUG_MODE_BEHAT: "off"
             PHP_IDE_CONFIG: "serverName=3brsSyliusPaymentFeePlugin"
             BEHAT_APP_PORT: "8081"
-            BEHAT_PARAMS: '{"extensions":{"Behat\\MinkExtension":{"base_url":"https://app.docker","sessions":{"chrome_headless":{"chrome":{"api_url":"http://chrome.docker:9222"}}}}}}'
+            BEHAT_PARAMS: '{"extensions":{"Behat\\MinkExtension":{"base_url":"https://app.docker:8081","sessions":{"chrome_headless":{"chrome":{"api_url":"http://chrome.docker:9222"}}}}}}'
         volumes:
             - ./:/app
         ports:
@@ -57,5 +57,3 @@ services:
         hostname: chrome.docker
         shm_size: "2gb"
         command: "--enable-automation --disable-gpu --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --disable-translate --disable-extensions --no-sandbox --headless --remote-debugging-port=9222 --remote-debugging-address=0.0.0.0 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' --disable-proxy-certificate-handler"
-#        environment:
-#            APP_ENV: "test"

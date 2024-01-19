@@ -12,10 +12,19 @@ else
   SYMFONY_BIN="${DIR}/symfony"
 fi
 
-BEHAT_APP_ENV=${BEHAT_APP_ENV:=test}
+SUDO=''
+if command -v sudo &>/dev/null; then
+  # symfony requires root privileges to generate certificate, and same (root) user is required to use that certificate
+  SUDO='sudo --preserve-env'
+fi
+
+export APP_ENV=test
+
 BEHAT_APP_PORT=${BEHAT_APP_PORT:=8081}
 
-SYMFONY_SERVER_START_COMMAND="${SYMFONY_BIN} server:start --port=${BEHAT_APP_PORT:=8081} --dir=${DIR}/../tests/Application/public --daemon"
+${SUDO} "${SYMFONY_BIN}" server:stop --dir="${DIR}"/../tests/Application/public 1>/dev/null
+
+SYMFONY_SERVER_START_COMMAND="${SUDO} ${SYMFONY_BIN} server:start --port=${BEHAT_APP_PORT} --dir=${DIR}/../tests/Application/public --daemon"
 
 SYMFONY_SERVER_START_OUTPUT=$(bash -c "$SYMFONY_SERVER_START_COMMAND" 2>&1)
 
@@ -30,18 +39,12 @@ fi
 if [ -z "${SYMFONY_SERVER_CA_WARNING}" ] && [ -z "${SYMFONY_SERVER_RUNNING_ON_HTTP_WARNING}" ]; then
   echo "${SYMFONY_SERVER_START_OUTPUT}"
 else
-  SUDO=''
-  if command -v sudo &>/dev/null; then
-    # symfony requires root privileges to generate certificate, and same (root) user is required to use that certificate
-    SUDO='sudo'
-  fi
   # sudoers in Docker allows sudo without password for ./bin/symfony
-  "${SUDO}" "${SYMFONY_BIN}" server:ca:install
+  ${SUDO} "${SYMFONY_BIN}" server:ca:install
 
-  "${SYMFONY_BIN}" server:stop --dir="${DIR}"/../tests/Application/public 1>/dev/null
-  "${SUDO}" "${SYMFONY_BIN}" server:stop --dir="${DIR}"/../tests/Application/public 1>/dev/null
+  ${SUDO} "${SYMFONY_BIN}" server:stop --dir="${DIR}"/../tests/Application/public 1>/dev/null
 
-  bash -c "${SUDO} ${SYMFONY_SERVER_START_COMMAND}"
+  ${SYMFONY_SERVER_START_COMMAND}
 fi
 
-(APP_ENV="${BEHAT_APP_ENV}" "${DIR}/behat" "$@")
+"${DIR}/behat" "$@"
