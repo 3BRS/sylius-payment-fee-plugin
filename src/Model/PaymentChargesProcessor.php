@@ -13,8 +13,10 @@ use ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculatorInterfa
 
 final class PaymentChargesProcessor implements OrderProcessorInterface
 {
-    public function __construct(private FactoryInterface $adjustmentFactory, private DelegatingCalculatorInterface $paymentChargesCalculator)
-    {
+    public function __construct(
+        private readonly FactoryInterface $adjustmentFactory,
+        private readonly DelegatingCalculatorInterface $paymentChargesCalculator,
+    ) {
     }
 
     public function process(BaseOrderInterface $order): void
@@ -35,8 +37,12 @@ final class PaymentChargesProcessor implements OrderProcessorInterface
 
             $adjustment->setType(AdjustmentInterface::PAYMENT_ADJUSTMENT);
             $adjustment->setAmount($paymentCharge);
-            $adjustment->setLabel($payment->getMethod() !== null ? $payment->getMethod()->getName() : null);
-            $adjustment->setOriginCode($payment->getMethod() !== null ? $payment->getMethod()->getCode() : null);
+            $adjustment->setLabel($payment->getMethod() !== null
+                ? $payment->getMethod()->getName()
+                : null);
+            $adjustment->setOriginCode($payment->getMethod() !== null
+                ? $payment->getMethod()->getCode()
+                : null);
             $adjustment->setNeutral(false);
 
             $order->addAdjustment($adjustment);
