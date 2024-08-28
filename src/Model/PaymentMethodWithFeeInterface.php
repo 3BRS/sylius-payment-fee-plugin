@@ -13,9 +13,9 @@ interface PaymentMethodWithFeeInterface extends PaymentMethodInterface, TaxableI
     public function getCalculator(): ?string;
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getCalculatorConfiguration(): array;
 
-    public function setTaxCategory(?TaxCategoryInterface $category): void;
+    public function setTaxCategory(?TaxCategoryInterface $taxCategory): void;
 }
