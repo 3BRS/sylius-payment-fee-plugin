@@ -20,7 +20,7 @@ trait PaymentMethodWithFeeTrait
     protected ?TaxCategoryInterface $taxCategory = null;
 
     /** @ORM\Column(name="calculator_configuration", type="json", nullable=true) */
-    protected array $calculatorConfiguration = [];
+    protected ?array $calculatorConfiguration = [];
 
     public function getCalculator(): ?string
     {
@@ -39,6 +39,10 @@ trait PaymentMethodWithFeeTrait
 
     public function setCalculatorConfiguration(array $calculatorConfiguration): void
     {
+        if ([] === $calculatorConfiguration) {
+            $calculatorConfiguration = null;
+        }
+
         $this->calculatorConfiguration = $calculatorConfiguration;
     }
 
