@@ -8,8 +8,8 @@ cd "$(dirname "$DIR")"
 
 set -x
 tests/Application/bin/console cache:warmup
-vendor/bin/phpstan analyse \
+
+php --define xdebug.mode=off vendor/bin/phpstan analyse \
     --memory-limit 1G \
     --configuration phpstan.neon \
-    --debug
-    "$@"
+    --debug "$@"
