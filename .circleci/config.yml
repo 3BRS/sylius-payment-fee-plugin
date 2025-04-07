@@ -1,6 +1,7 @@
 version: 2.1
 
 workflows:
+
     sylius1.14-php8.1+:
         jobs:
             -   build:
@@ -8,8 +9,8 @@ workflows:
                     matrix:
                         parameters:
                             sylius_version: [ "1.14" ]
-                            php_version: [ "8.1", "8.2" ]
-                            symfony_version: [ "5.4", "6.0", "6.1", "6.2", "6.3", "6.4" ]
+                            php_version: [ "8.1", "8.2", "8.3", "8.4" ]
+                            symfony_version: [ "6.4" ]
 
 jobs:
     build:
@@ -35,15 +36,15 @@ jobs:
             # to avoid installing different package "Note, selecting 'cmdtest' instead of 'yarn'"
             -   run: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
             -   run: echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-            -   run: curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+            -   run: curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
             -   run: apt-get update
                 # netcat to get 'nc' command for waiting for database
-            -   run: apt-get install -y nodejs yarn mariadb-client netcat
+            -   run: apt-get install -y nodejs yarn mariadb-client netcat-openbsd
             -   run: composer self-update
 
             # Sylius & Symfony in current matrix versions
             -   run: composer require "sylius/sylius:<< parameters.sylius_version >>.*" --no-interaction --no-update --no-scripts
-            -   run: grep -o -E '"(symfony/[^"]+)"' composer.json | grep -v -E '(symfony/flex|symfony/webpack-encore-bundle)' | xargs printf '%s:<< parameters.symfony_version >>.* '| xargs composer require --no-interaction --no-update
+            -   run: grep -o -E '"(symfony/[^"]+)"' composer.json | grep -v -E '(symfony/flex|symfony/webpack-encore-bundle|symfony/debug-bundle|symfony/web-profiler-bundle)' | xargs printf '%s:<< parameters.symfony_version >>.* ' | xargs composer require --no-interaction --no-update
 
             -   run:
                     name: Wait for database
@@ -52,7 +53,7 @@ jobs:
 
             # COMPOSER PREFER LOWEST (oldest possible) #
             # has to delete vendor for next test with different libraries version to avoid Composer error 'Failed to extract...' if vendor dir cache does not exist
-            -   run: rm -fr vendor composer.lock
+            -   run: rm -fr composer.lock
             -   run: composer update --no-interaction --prefer-lowest --no-plugins
             -   run: yarn --cwd tests/Application install
             -   run: yarn --cwd tests/Application build
