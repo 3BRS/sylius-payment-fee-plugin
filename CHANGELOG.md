@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.3.0 (2025-06-02)
+
+- Add support for Doctrine PHP attributes by `#[ORM\Column]` etc.
+
 ## v1.2.0 (2025-03-20)
 
 ### Details
