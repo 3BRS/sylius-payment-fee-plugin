@@ -1,4 +1,4 @@
-{% import "@SyliusShop/Common/Macro/money.html.twig" as money %}
+{% import "@SyliusShop/shared/macro/money.html.twig" as money %}
 
 {% if order.shipments is not empty %}
 
@@ -7,7 +7,7 @@
 
 	{% if paymentFeeAdjustmentTotal > 0 %}
 		<tr>
-			<td colspan="4" class="right aligned" id="shipping-total">
+			<td colspan="4" class="text-end" id="shipping-total">
 				{{ 'threebrs.ui.paymentFee_total'|trans }}:
 				<span {{ sylius_test_html_attribute('payment-total') }}>{{ money.convertAndFormat(paymentFeeAdjustmentTotal) }}</span>
 			</td>

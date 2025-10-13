@@ -1,4 +1,4 @@
-{% import "@SyliusAdmin/Common/Macro/money.html.twig" as money %}
+{% import "@SyliusCore/Common/Macro/money.html.twig" as money %}
 
 {% set paymentFeeAdjustment = constant('ThreeBRS\\SyliusPaymentFeePlugin\\Model\\AdjustmentInterface::PAYMENT_ADJUSTMENT') %}
 
@@ -6,20 +6,16 @@
 {% if paymentFeeAdjustments is not empty %}
 	<tr>
 		<td colspan="5" id="payment-fee">
-			<div class="ui relaxed divided list">
+			<div class="list-group">
 				{% for paymentFeeLabel, paymentFeeAmount in sylius_aggregate_adjustments(paymentFeeAdjustments) %}
-					<div class="item">
-						<div class="content">
-							<span class="header">{{ paymentFeeLabel }}</span>
-							<div class="description">
-								{{ money.format(paymentFeeAmount, order.currencyCode) }}
-							</div>
-						</div>
+					<div class="list-group-item d-flex justify-content-between align-items-center">
+						<span class="fw-bold">{{ paymentFeeLabel }}</span>
+						<span>{{ money.format(paymentFeeAmount, order.currencyCode) }}</span>
 					</div>
 				{% endfor %}
 			</div>
 		</td>
-		<td colspan="4" id="paymentFee-total" class="right aligned">
+		<td colspan="4" id="paymentFee-total" class="text-end">
 			<strong>{{ 'threebrs.ui.paymentFee_total'|trans }}</strong>:
 			{{ money.format(order.getAdjustmentsTotal(paymentFeeAdjustment) ,order.currencyCode) }}
 		</td>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ThreeBRS\SyliusPaymentFeePlugin\Form\Extension;
 
 use Sylius\Bundle\PaymentBundle\Form\Type\PaymentMethodChoiceType;
+use Sylius\Component\Payment\Model\PaymentInterface;
 use Sylius\Component\Registry\ServiceRegistryInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\AbstractTypeExtension;
@@ -12,6 +13,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\CalculatorInterface;
 use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
+use Webmozart\Assert\Assert;
 
 class PaymentMethodChoiceTypeExtension extends AbstractTypeExtension
 {
@@ -29,6 +31,8 @@ class PaymentMethodChoiceTypeExtension extends AbstractTypeExtension
         }
 
         $subject = $options['subject'];
+        Assert::isInstanceOf($subject, PaymentInterface::class);
+
         $paymentCosts = [];
 
         foreach ($view->vars['choices'] as $choiceView) {

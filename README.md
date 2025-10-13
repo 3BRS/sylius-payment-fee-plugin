@@ -45,6 +45,18 @@
 
 For guide how to use your own entity see [Sylius docs - Customizing Models](https://docs.sylius.com/en/latest/customization/model.html)
 
+4. Import plugin JavaScript in `webpack.config.js`:
+   ```javascript
+   Encore
+      .addEntry('threebrs-payment-fee-admin', path.resolve(__dirname, 'vendor/3brs/sylius-payment-fee-plugin/src/Resources/public/admin/js/payment-fee.js'))
+   ```
+
+5. Rebuild assets:
+   ```bash
+   yarn install
+   yarn build
+   ```
+
 ### Admin
 
 1. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig` into `@SyliusAdmin/PaymentMethod/_form.html.twig`.

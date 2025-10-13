@@ -10,20 +10,13 @@ use Sylius\Component\Taxation\Model\TaxCategoryInterface;
 
 trait PaymentMethodWithFeeTrait
 {
-    /** @ORM\Column(name="calculator", type="text", nullable=true) */
     #[ORM\Column(name: 'calculator', type: Types::TEXT, nullable: true)]
     protected ?string $calculator = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Sylius\Component\Taxation\Model\TaxCategoryInterface")
-     *
-     * @ORM\JoinColumn(name="tax_category_id")
-     */
     #[ORM\ManyToOne(targetEntity: TaxCategoryInterface::class)]
     #[ORM\JoinColumn(name: 'tax_category_id')]
     protected ?TaxCategoryInterface $taxCategory = null;
 
-    /** @ORM\Column(name="calculator_configuration", type="json", nullable=true) */
     #[ORM\Column(name: 'calculator_configuration', type: 'json', nullable: true)]
     protected array $calculatorConfiguration = [];
 

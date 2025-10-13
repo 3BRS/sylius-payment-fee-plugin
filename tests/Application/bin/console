@@ -3,8 +3,8 @@
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\ErrorHandler\Debug;
 use Tests\ThreeBRS\SyliusPaymentFeePlugin\Kernel;
-use Symfony\Component\Debug\Debug;
 
 set_time_limit(0);
 

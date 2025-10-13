@@ -1,7 +1,7 @@
-{% import '@SyliusShop/Common/Macro/money.html.twig' as money %}
+{% import "@SyliusShop/shared/macro/money.html.twig" as money %}
 
-<div class="extra">
-	<div class="ui large right floated fee label" {{ sylius_test_html_attribute('payment-method-fee') }}>
+<div class="mt-2">
+	<div class="badge bg-primary fs-6 float-end" {{ sylius_test_html_attribute('payment-method-fee') }}>
 		{{ money.convertAndFormat(fee) }}
 	</div>
 </div>
