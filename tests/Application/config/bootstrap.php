@@ -5,7 +5,10 @@ declare(strict_types=1);
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpKernel\Kernel;
 
-require dirname(__DIR__) . '../../../vendor/autoload.php';
+require dirname(__DIR__).'../../../vendor/autoload.php';
+
+ini_set('memory_limit', $_SERVER['APP_MEMORY_LIMIT'] ?? ($_ENV['APP_MEMORY_LIMIT'] ?? '512M'));
+
 
 if (($_SERVER['APP_ENV'] ?? '') === 'test'
     && (!empty($_ENV['APP_SUPPRESS_DEPRECATED_ERRORS'])
@@ -20,7 +23,7 @@ if (($_SERVER['APP_ENV'] ?? '') === 'test'
 // Run "composer dump-env prod" to create it (requires symfony/flex >=1.2)
 if (is_readable(dirname(__DIR__) . '/.env.local.php') && is_array($env = @include dirname(__DIR__) . '/.env.local.php')) {
     $_SERVER += $env;
-    $_ENV    += $env;
+    $_ENV += $env;
 } elseif (!class_exists(Dotenv::class)) {
     throw new RuntimeException('Please run "composer require symfony/dotenv" to load the ".env" files configuring the application.');
 } elseif (method_exists(Dotenv::class, 'bootEnv')) {

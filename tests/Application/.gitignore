@@ -5,7 +5,7 @@
 /public/media/*
 !/public/media/image/
 /public/media/image/*
-!/public/media/image/.gitkeep
+!/public/media/image/.gitignore
 
 /node_modules
 

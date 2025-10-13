@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ThreeBRS\SyliusPaymentFeePlugin\Form\Extension;
 
-use Sylius\Bundle\PaymentBundle\Form\Type\PaymentMethodType as SyliusPaymentMethodType;
+use Sylius\Bundle\AdminBundle\Form\Type\PaymentMethodType as SyliusPaymentMethodType;
 use Sylius\Bundle\ResourceBundle\Form\EventSubscriber\AddCodeFormSubscriber;
 use Sylius\Bundle\ResourceBundle\Form\Registry\FormTypeRegistryInterface;
 use Sylius\Bundle\TaxationBundle\Form\Type\TaxCategoryChoiceType;
@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormView;
 use ThreeBRS\SyliusPaymentFeePlugin\Form\Type\CalculatorChoiceType;
 use ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\CalculatorInterface;
 use ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface;
+use Webmozart\Assert\Assert;
 
 class PaymentMethodTypeExtension extends AbstractTypeExtension
 {
@@ -41,11 +42,10 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                 function (FormEvent $event) {
                     $method = $event->getData();
 
-                    if ($method === null || $method->getId() === null) {
-                        return;
-                    }
-
                     if ($method instanceof PaymentMethodWithFeeInterface && $method->getCalculator() !== null) {
+                        if ($method->getId() === null) {
+                            return;
+                        }
                         $this->addConfigurationField($event->getForm(), $method->getCalculator());
                     }
                 },
@@ -100,8 +100,11 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['prototypes'] = [];
+        // @phpstan-ignore-next-line
         foreach ($form->getConfig()->getAttribute('prototypes') as $group => $prototypes) {
+            // @phpstan-ignore-next-line
             foreach ($prototypes as $type => $prototype) {
+                Assert::isInstanceOf($prototype, FormInterface::class);
                 $view->vars['prototypes'][$group . '_' . $type] = $prototype->createView($view);
             }
         }

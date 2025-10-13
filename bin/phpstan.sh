@@ -7,9 +7,13 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$(dirname "$DIR")"
 
 set -x
-tests/Application/bin/console cache:warmup
 
-php --define xdebug.mode=off vendor/bin/phpstan analyse \
-    --memory-limit 1G \
-    --configuration phpstan.neon \
-    --debug "$@"
+if [ ! -f tests/Application/var/cache/dev/Tests_ThreeBRS_SyliusPaymentFeePlugin_KernelDevDebugContainer.xml ]; then
+  php bin/console --env=dev cache:warmup --no-optional-warmers
+fi
+
+php --no-php-ini --define memory_limit=1G vendor/bin/phpstan analyse \
+    --debug \
+    --level max \
+    src tests \
+    "$@"
