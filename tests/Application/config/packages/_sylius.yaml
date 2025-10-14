@@ -4,6 +4,7 @@ imports:
     - { resource: "@SyliusAdminBundle/Resources/config/app/config.y*ml" }
     - { resource: "@SyliusShopBundle/Resources/config/app/config.y*ml" }
     - { resource: "@SyliusApiBundle/Resources/config/app/config.y*ml" }
+    - { resource: "@ThreeBRSSyliusPaymentFeePlugin/Resources/config/config.yaml" }
 
 parameters:
     sylius_core.public_dir: '%kernel.project_dir%/public'
@@ -14,3 +15,9 @@ sylius_shop:
 
 sylius_api:
     enabled: true
+
+sylius_payment:
+    resources:
+        payment_method:
+            classes:
+                model: Tests\ThreeBRS\SyliusPaymentFeePlugin\Entity\PaymentMethod

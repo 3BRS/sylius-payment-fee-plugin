@@ -45,11 +45,39 @@
 
 For guide how to use your own entity see [Sylius docs - Customizing Models](https://docs.sylius.com/en/latest/customization/model.html)
 
-4. Import plugin JavaScript in `webpack.config.js`:
-   ```javascript
-   Encore
-      .addEntry('threebrs-payment-fee-admin', path.resolve(__dirname, 'vendor/3brs/sylius-payment-fee-plugin/src/Resources/public/admin/js/payment-fee.js'))
-   ```
+4. Configure Stimulus Bridge and register the payment calculator controller:
+
+   a. Create `assets/admin/controllers.json` file for Stimulus Bridge:
+
+      ```json
+      {
+          "controllers": [],
+          "entrypoints": []
+      }
+      ```
+
+   b. Update `webpack.config.js` to add an alias for the admin build configuration:
+      ```javascript
+      const path = require('path');
+
+      // For admin build
+      Encore
+          // ... other configuration
+          .addAliases({
+              '@symfony/stimulus-bridge/controllers.json': path.resolve(__dirname, 'assets/admin/controllers.json')
+          });
+      ```
+
+   c. Register the Stimulus controller in your admin entrypoint (e.g., `assets/admin/entrypoint.js`):
+      ```javascript
+      import { startStimulusApp } from '@symfony/stimulus-bridge';
+      import PaymentCalculatorController from '../vendor/3brs/sylius-payment-fee-plugin/src/Resources/assets/admin/controllers/payment-calculator_controller';
+
+      export const app = startStimulusApp(/* ... */);
+
+      // Register the payment calculator controller
+      app.register('payment-calculator', PaymentCalculatorController);
+      ```
 
 5. Rebuild assets:
    ```bash

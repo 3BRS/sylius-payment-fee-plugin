@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.payment_method.create.content.form.sections':
+            3brs_payment_fee:
+                template: '@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig'
+                priority: 50

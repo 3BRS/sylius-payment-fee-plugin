@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.order.show.content.sections.summary':
+            3brs_payment_fee_total:
+                template: '@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twigs'
+                priority: 50
