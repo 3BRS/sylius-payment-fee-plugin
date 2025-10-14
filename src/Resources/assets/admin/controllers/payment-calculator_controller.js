@@ -12,17 +12,27 @@ export default class extends Controller {
     };
 
     connect() {
-        // Initialize on load if there's already a selected value
-        if (this.selectTarget.value) {
-            this.updatePrototype();
+        // Only initialize if container is empty
+        if (this.containerTarget.innerHTML.trim() === '') {
+            // If there's a selected value OR the select has options (browser will default to first)
+            const hasValue = this.selectTarget.value || this.selectTarget.options.length > 0;
+            if (hasValue) {
+                this.updatePrototype();
+            }
         }
+        // If container has content (edit mode with existing values), don't overwrite it
     }
 
     /**
      * Updates the container with the appropriate prototype form when calculator changes
      */
     updatePrototype() {
-        const selectedValue = this.selectTarget.value;
+        // Get selected value, or use first option's value if none is explicitly selected
+        let selectedValue = this.selectTarget.value;
+
+        if (!selectedValue && this.selectTarget.options.length > 0) {
+            selectedValue = this.selectTarget.options[0].value;
+        }
 
         if (!selectedValue) {
             this.containerTarget.innerHTML = '';

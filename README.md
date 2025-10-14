@@ -45,103 +45,46 @@
 
 For guide how to use your own entity see [Sylius docs - Customizing Models](https://docs.sylius.com/en/latest/customization/model.html)
 
-4. Configure Stimulus Bridge and register the payment calculator controller:
+4. **JavaScript Integration** - Register the Stimulus controller for dynamic calculator configuration forms:
 
-   a. Create `assets/admin/controllers.json` file for Stimulus Bridge:
+   The plugin includes a Stimulus controller (`payment-calculator_controller.js`) that handles dynamic prototype forms for payment method calculator configuration. This allows the calculator configuration fields to appear/change dynamically when you select a calculator type in the admin panel.
 
-      ```json
-      {
-          "controllers": [],
-          "entrypoints": []
-      }
-      ```
+   **Manual Steps Required:**
 
-   b. Update `webpack.config.js` to add an alias for the admin build configuration:
-      ```javascript
-      const path = require('path');
+   a. In your application's admin entrypoint file (e.g., `assets/admin/entrypoint.js`):
 
-      // For admin build
-      Encore
-          // ... other configuration
-          .addAliases({
-              '@symfony/stimulus-bridge/controllers.json': path.resolve(__dirname, 'assets/admin/controllers.json')
-          });
-      ```
-
-   c. Register the Stimulus controller in your admin entrypoint (e.g., `assets/admin/entrypoint.js`):
       ```javascript
       import { startStimulusApp } from '@symfony/stimulus-bridge';
       import PaymentCalculatorController from '../vendor/3brs/sylius-payment-fee-plugin/src/Resources/assets/admin/controllers/payment-calculator_controller';
 
-      export const app = startStimulusApp(/* ... */);
+      // Start Stimulus app
+      export const app = startStimulusApp(require.context(
+          '@symfony/stimulus-bridge/lazy-controller-loader!./controllers',
+          true,
+          /\.[jt]sx?$/
+      ));
 
-      // Register the payment calculator controller
+      // Register the payment calculator controller from the plugin
       app.register('payment-calculator', PaymentCalculatorController);
       ```
 
-5. Rebuild assets:
+   b. Rebuild your assets after adding the controller:
+      ```bash
+      yarn install
+      yarn build
+      ```
+
+   **How it works:**
+   - When you select a calculator type (e.g., "Flat rate") in the payment method form, the controller dynamically loads the appropriate configuration fields
+   - On the edit page, it preserves existing saved values
+   - On the create page, it initializes empty fields for the selected calculator
+   - The controller uses Stimulus data attributes: `data-controller="payment-calculator"`, `data-payment-calculator-target="select"`, and `data-payment-calculator-target="container"`
+
+5. Create and run doctrine database migrations:
    ```bash
-   yarn install
-   yarn build
+   bin/console doctrine:migrations:diff
+   bin/console doctrine:migrations:migrate
    ```
-
-### Admin
-
-1. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig` into `@SyliusAdmin/PaymentMethod/_form.html.twig`.
-
-   ```twig
-   {# ... #}
-   
-   {% include '@ThreeBRSSyliusPaymentFeePlugin/Admin/_form.html.twig' %}
-   ```
-
-2. Include `@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig` into `@AdminBundle/Order/Show/Summary/_totals.html.twig`.
-
-   ```twig
-   {# ... #}
-   
-   {% include '@ThreeBRSSyliusPaymentFeePlugin/Admin/_order_show.html.twig' %}
-   ```
-
-### Shop
-
-1. Include `@ThreeBRSSyliusPaymentFeePlugin/Shop/Checkout/SelectPayment/_choice.html.twig` into `@ShopBundle/Checkout/SelectPayment/_choice.html.twig`.
-
-   ```twig
-   {# ... #}
-   
-   {% include '@ThreeBRSSyliusPaymentFeePlugin/Shop/Checkout/SelectPayment/_choice.html.twig' %}
-   ```
-
-2. Add variable fee `{% set fee = form.method.vars.payment_costs[choice_form.vars.value] %}` into `@ShopBundle/Checkout/SelectPayment/_payment.html.twig` into `foreach`.
-
-   ```twig
-   {# ... #}
-   
-   {% for key, choice_form in form.method %}
-       {% set fee = form.method.vars.payment_costs[choice_form.vars.value] %}
-       {% include '@SyliusShop/Checkout/SelectPayment/_choice.html.twig' with {'form': choice_form, 'method': form.method.vars.choices[key].data} %}
-   {% else %}
-       {% include '@SyliusShop/Checkout/SelectPayment/_unavailable.html.twig' %}
-   {% endfor %}
-   ```
-
-3. Include `@ThreeBRSSyliusPaymentFeePlugin/Shop/Common/Order/Table/_payment.html.twig` into `@ShopBundle/Common/Order/Table/_totals.html.twig`.
-
-   ```twig
-   {# ... #}
-   
-   <tr>
-       {% include '@SyliusShop/Common/Order/Table/_shipping.html.twig' with {'order': order} %}
-   </tr>
-   {% include '@ThreeBRSSyliusPaymentFeePlugin/Shop/Common/Order/Table/_payment.html.twig' with {'order': order} %}
-   ```
-
-4. Create and run doctrine database migrations
-    ```bash
-    bin/console doctrine:migrations:diff
-    bin/console doctrine:migrations:migrate
-    ```
 
 ## Development
 

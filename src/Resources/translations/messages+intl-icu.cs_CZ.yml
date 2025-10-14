@@ -1,7 +1,7 @@
 threebrs:
     ui:
         payment_charges: Poplatky
-        paymentFee_total: Poplatky celkem
+        payment_fees_total: Poplatky celkem
     form:
         payment_method:
             calculator: Calculator

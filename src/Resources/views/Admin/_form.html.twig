@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-12">
                 <div data-controller="payment-calculator"
-                     data-payment-calculator-prototype-prefix-value="sylius_payment_method_calculator_calculators">
+                     data-payment-calculator-prototype-prefix-value="calculators">
                     {{ form_row(form.calculator, {'attr': {'data-payment-calculator-target': 'select', 'data-action': 'change->payment-calculator#updatePrototype'}}) }}
                     {% for name, calculatorConfigurationPrototype in form.vars.prototypes %}
                         <div id="{{ form.calculator.vars.id }}_{{ name }}"

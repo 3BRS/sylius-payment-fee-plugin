@@ -3,6 +3,7 @@ services:
         build: ./.docker/php
         environment:
             APP_ENV: "dev"
+            APP_DEBUG: "1"
             DATABASE_URL: "mysql://root:mysql@mysql/sylius_%kernel.environment%?charset=utf8mb4"
 #            DATABASE_URL: "pgsql://root:postgres@postgres/sylius_%kernel.environment%?charset=utf8" # When using postgres
             PHP_DATE_TIMEZONE: "Europe/Prague"
