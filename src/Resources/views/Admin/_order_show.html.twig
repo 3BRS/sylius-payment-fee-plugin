@@ -7,7 +7,7 @@
 
 {% if paymentFeeAdjustments is not empty %}
 <tr>
-	<td><strong>{{ 'threebrs.ui.payment_fee_total'|trans }}:</strong></td>
+	<td><strong>{{ 'threebrs.ui.payment_fees_total'|trans }}:</strong></td>
 	<td class="text-end">{{ money.format(order.getAdjustmentsTotal(paymentFeeAdjustment), order.currencyCode) }}</td>
 </tr>
 

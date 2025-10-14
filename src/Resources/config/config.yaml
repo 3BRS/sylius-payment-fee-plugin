@@ -1,2 +1,2 @@
 imports:
-    - { resource: 'twig_hooks/**/*.yaml' }
+    - { resource: "@ThreeBRSSyliusPaymentFeePlugin/Resources/config/app/twig_hooks/**/*.yaml" }

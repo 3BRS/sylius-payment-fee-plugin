@@ -81,11 +81,6 @@
       "Tests\\ThreeBRS\\SyliusPaymentFeePlugin\\": "tests/Application/src/"
     }
   },
-  "extra": {
-    "symfony": {
-      "require": "^6.4"
-    }
-  },
   "config": {
     "sort-packages": true,
     "allow-plugins": {

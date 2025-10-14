@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.base#javascripts':
+            3brs_payment_fee_scripts:
+                template: '@ThreeBRSSyliusPaymentFeePlugin/admin/shared/layout/base/scripts.html.twig'
+                priority: -100
