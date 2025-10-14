@@ -22,12 +22,16 @@ use Webmozart\Assert\Assert;
 
 class PaymentMethodTypeExtension extends AbstractTypeExtension
 {
-    public function __construct(private ServiceRegistryInterface $calculatorRegistry, private FormTypeRegistryInterface $formTypeRegistry)
-    {
+    public function __construct(
+        private readonly ServiceRegistryInterface $calculatorRegistry,
+        private readonly FormTypeRegistryInterface $formTypeRegistry,
+    ) {
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options,
+    ): void {
         $builder
             ->addEventSubscriber(new AddCodeFormSubscriber())
             ->add('taxCategory', TaxCategoryChoiceType::class)
@@ -39,7 +43,9 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                 ],
             )->addEventListener(
                 FormEvents::PRE_SET_DATA,
-                function (FormEvent $event) {
+                function (
+                    FormEvent $event,
+                ) {
                     $method = $event->getData();
 
                     if ($method instanceof PaymentMethodWithFeeInterface && $method->getCalculator() !== null) {
@@ -52,7 +58,9 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
             )
             ->addEventListener(
                 FormEvents::PRE_SUBMIT,
-                function (FormEvent $event) {
+                function (
+                    FormEvent $event,
+                ) {
                     $data = $event->getData();
 
                     if (!is_array($data) || empty($data) || !array_key_exists('calculator', $data)) {
@@ -61,8 +69,7 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
 
                     $this->addConfigurationField($event->getForm(), $data['calculator']);
                 },
-            )
-        ;
+            );
 
         $prototypes = [];
         foreach ($this->calculatorRegistry->all() as $name => $calculator) {
@@ -84,8 +91,10 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
         $builder->setAttribute('prototypes', $prototypes);
     }
 
-    private function addConfigurationField(FormInterface $form, string $calculatorName): void
-    {
+    private function addConfigurationField(
+        FormInterface $form,
+        string $calculatorName,
+    ): void {
         $calculator = $this->calculatorRegistry->get($calculatorName);
         assert($calculator instanceof CalculatorInterface);
 
@@ -97,8 +106,11 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
         $form->add('calculatorConfiguration', $this->formTypeRegistry->get($calculatorType, 'default'));
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options): void
-    {
+    public function buildView(
+        FormView $view,
+        FormInterface $form,
+        array $options,
+    ): void {
         $view->vars['prototypes'] = [];
         // @phpstan-ignore-next-line
         foreach ($form->getConfig()->getAttribute('prototypes') as $group => $prototypes) {
@@ -112,8 +124,6 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
 
     public static function getExtendedTypes(): iterable
     {
-        return [
-            SyliusPaymentMethodType::class,
-        ];
+        yield SyliusPaymentMethodType::class;
     }
 }

@@ -1,20 +1,36 @@
-<div class="card">
-	<div class="card-body">
-		<h5 class="card-title border-bottom pb-2">{{ 'sylius.ui.taxes'|trans }}</h5>
-		{{ form_row(form.taxCategory) }}
-		<h5 class="card-title border-bottom pb-2 mt-4">{{ 'threebrs.ui.payment_charges'|trans }}</h5>
-		{{ form_row(form.calculator) }}
-		{% for name, calculatorConfigurationPrototype in form.vars.prototypes %}
-			<div id="{{ form.calculator.vars.id }}_{{ name }}" data-container=".calculatorConfiguration"
-				 data-prototype="{{ form_widget(calculatorConfigurationPrototype)|e }}">
-			</div>
-		{% endfor %}
-		<div class="border rounded p-3 calculatorConfiguration">
-			{% if form.calculatorConfiguration is defined %}
-				{% for field in form.calculatorConfiguration %}
-					{{ form_row(field) }}
-				{% endfor %}
-			{% endif %}
-		</div>
-	</div>
+{% set form = hookable_metadata.context.form %}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <div class="card-title">{{ 'threebrs.ui.payment_charges'|trans }}</div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                {{ form_row(form.taxCategory) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div data-controller="payment-calculator"
+                     data-payment-calculator-prototype-prefix-value="sylius_payment_method_calculator_calculators">
+                    {{ form_row(form.calculator, {'attr': {'data-payment-calculator-target': 'select', 'data-action': 'change->payment-calculator#updatePrototype'}}) }}
+                    {% for name, calculatorConfigurationPrototype in form.vars.prototypes %}
+                        <div id="{{ form.calculator.vars.id }}_{{ name }}"
+                             data-prototype="{{ form_widget(calculatorConfigurationPrototype)|e }}">
+                        </div>
+                    {% endfor %}
+                    <div class="border rounded p-3 calculatorConfiguration" data-payment-calculator-target="container">
+                        {% if form.calculatorConfiguration is defined %}
+                            {% for field in form.calculatorConfiguration %}
+                                {{ form_row(field) }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

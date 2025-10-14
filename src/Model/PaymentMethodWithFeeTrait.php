@@ -14,11 +14,11 @@ trait PaymentMethodWithFeeTrait
     protected ?string $calculator = null;
 
     #[ORM\ManyToOne(targetEntity: TaxCategoryInterface::class)]
-    #[ORM\JoinColumn(name: 'tax_category_id')]
+    #[ORM\JoinColumn(name: 'tax_category_id', nullable: true)]
     protected ?TaxCategoryInterface $taxCategory = null;
 
     #[ORM\Column(name: 'calculator_configuration', type: 'json', nullable: true)]
-    protected array $calculatorConfiguration = [];
+    protected ?array $calculatorConfiguration = [];
 
     public function getCalculator(): ?string
     {
@@ -35,7 +35,7 @@ trait PaymentMethodWithFeeTrait
         return $this->calculatorConfiguration ?? [];
     }
 
-    public function setCalculatorConfiguration(array $calculatorConfiguration): void
+    public function setCalculatorConfiguration(?array $calculatorConfiguration): void
     {
         $this->calculatorConfiguration = $calculatorConfiguration;
     }

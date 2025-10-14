@@ -59,8 +59,6 @@ class PaymentMethodChoiceTypeExtension extends AbstractTypeExtension
 
     public static function getExtendedTypes(): iterable
     {
-        return [
-            PaymentMethodChoiceType::class,
-        ];
+        yield PaymentMethodChoiceType::class;
     }
 }
