@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.shared.form.select_payment.payment.choice.details':
+            payment_fee:
+                template: '@ThreeBRSSyliusPaymentFeePlugin/Shop/shared/form/select_payment/payment/choice/details/fee.html.twig'
+                priority: 200 # above name (100)

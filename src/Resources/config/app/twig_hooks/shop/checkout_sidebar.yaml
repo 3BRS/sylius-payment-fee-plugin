@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.checkout.common.sidebar.summary.total':
+            payment_fee_total:
+                template: '@ThreeBRSSyliusPaymentFeePlugin/Shop/checkout/common/sidebar/summary/total/payment_fee.html.twig'
+                priority: 150

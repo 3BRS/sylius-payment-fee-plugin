@@ -1,0 +1,18 @@
+{% import "@SyliusShop/shared/macro/money.html.twig" as money %}
+
+{# Access order from hookable metadata context #}
+{% set order = hookable_metadata.context.order|default(null) %}
+
+{% if order and order.shipments is not empty %}
+    {% set paymentFeeAdjustment = constant('ThreeBRS\\SyliusPaymentFeePlugin\\Model\\AdjustmentInterface::PAYMENT_ADJUSTMENT') %}
+    {% set paymentFeeAdjustmentTotal = order.getAdjustmentsTotal(paymentFeeAdjustment) %}
+
+    {% if paymentFeeAdjustmentTotal > 0 %}
+        <tr>
+            <td>{{ 'threebrs.ui.payment_fees_total'|trans }}:</td>
+            <td class="text-end">
+                <span {{ sylius_test_html_attribute('payment-total') }}>{{ money.convertAndFormat(paymentFeeAdjustmentTotal) }}</span>
+            </td>
+        </tr>
+    {% endif %}
+{% endif %}

@@ -9,6 +9,7 @@ use Sylius\Component\Payment\Model\PaymentInterface;
 use Sylius\Component\Registry\ServiceRegistryInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\CalculatorInterface;
@@ -17,13 +18,10 @@ use Webmozart\Assert\Assert;
 
 class PaymentMethodChoiceTypeExtension extends AbstractTypeExtension
 {
-    public function __construct(private ServiceRegistryInterface $calculatorRegistry)
+    public function __construct(private readonly ServiceRegistryInterface $calculatorRegistry)
     {
     }
 
-    /**
-     * @param array<mixed> $options
-     */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         if (!isset($options['subject'])) {
@@ -35,7 +33,9 @@ class PaymentMethodChoiceTypeExtension extends AbstractTypeExtension
 
         $paymentCosts = [];
 
+        \assert(is_iterable($view->vars['choices']));
         foreach ($view->vars['choices'] as $choiceView) {
+            \assert($choiceView instanceof ChoiceView);
             $method = $choiceView->data;
 
             if (!$method instanceof PaymentMethodWithFeeInterface) {

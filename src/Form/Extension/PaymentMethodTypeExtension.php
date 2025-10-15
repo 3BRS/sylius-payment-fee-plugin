@@ -67,6 +67,8 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
                         return;
                     }
 
+                    \assert(is_string($data['calculator']));
+
                     $this->addConfigurationField($event->getForm(), $data['calculator']);
                 },
             );
@@ -117,6 +119,8 @@ class PaymentMethodTypeExtension extends AbstractTypeExtension
             // @phpstan-ignore-next-line
             foreach ($prototypes as $type => $prototype) {
                 Assert::isInstanceOf($prototype, FormInterface::class);
+                Assert::string($group, 'Group name must be a string');
+                Assert::string($type, 'Type name must be a string');
                 $view->vars['prototypes'][$group . '_' . $type] = $prototype->createView($view);
             }
         }
