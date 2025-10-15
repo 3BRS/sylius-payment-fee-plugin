@@ -24,8 +24,16 @@
 * Typical usage: _Cash on Delivery_
 * Taxes are implemented the same way as taxes for shipping fees
 
+### Admin
 <p align="center">
-	<img src="https://raw.githubusercontent.com/3BRS/sylius-payment-fee-plugin/master/doc/admin.png"/>
+ <img src="./doc/admin_payment_fee_configuration.png" style="max-width: 500px" alt="Admin payment fee configuration"/>
+</p>
+
+### Checkout
+
+<p align="center">
+ <img src="doc/checkout_payment_fees.png" style="max-width: 500px" alt="Checkout payment fees"/>
+ <img src="doc/checkout_order_summary_with_payment_fee.png" style="max-width: 500px" alt="Checkout order summary with payment fee"/>
 </p>
 
 ## Installation
@@ -58,11 +66,7 @@ For guide how to use your own entity see [Sylius docs - Customizing Models](http
       import PaymentCalculatorController from '../vendor/3brs/sylius-payment-fee-plugin/src/Resources/assets/admin/controllers/payment-calculator_controller';
 
       // Start Stimulus app
-      export const app = startStimulusApp(require.context(
-          '@symfony/stimulus-bridge/lazy-controller-loader!./controllers',
-          true,
-          /\.[jt]sx?$/
-      ));
+      export const app = startStimulusApp();
 
       // Register the payment calculator controller from the plugin
       app.register('payment-calculator', PaymentCalculatorController);

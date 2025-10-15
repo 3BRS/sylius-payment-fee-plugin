@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculator;
+use Webmozart\Assert\Assert;
 
 final class RegisterFeeCalculatorsPass implements CompilerPassInterface
 {
@@ -23,11 +24,16 @@ final class RegisterFeeCalculatorsPass implements CompilerPassInterface
         $calculators = [];
 
         foreach ($container->findTaggedServiceIds(DelegatingCalculator::class) as $id => $attributes) {
-            if (!isset($attributes[0]['calculator'], $attributes[0]['label'])) {
+            if (!$attributes) {
+                continue;
+            }
+            assert(is_array($attributes[0]) || $attributes[0] instanceof \ArrayAccess);
+            if (!isset($attributes[0]['calculator']) || !isset($attributes[0]['label'])) {
                 throw new \InvalidArgumentException('Tagged payment fee calculators needs to have `calculator` and `label` attributes.');
             }
 
             $name = $attributes[0]['calculator'];
+            Assert::string($name, 'The "calculator" attribute must be a string');
             $calculators[$name] = $attributes[0]['label'];
 
             $registry->addMethodCall('register', [$name, new Reference($id)]);

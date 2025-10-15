@@ -59,16 +59,7 @@ services:
             $paymentChargesCalculator: '@ThreeBRS\SyliusPaymentFeePlugin\Model\Calculator\DelegatingCalculatorInterface'
         tags:
             - name: sylius.order_processor
-              priotiry: -5
-
-# TODO OK removed?
-#    threebrs.sylius_payment_fee_plugin.order_processing.order_payment_processor.checkout:
-#        class: Sylius\Component\Core\OrderProcessing\OrderPaymentProcessor
-#        arguments:
-#            - '@sylius.order_payment_provider'
-#        tags:
-#            - name: sylius.order_processor
-#              priotiry: 5
+              priority: 5 # just before \Sylius\Component\Core\OrderProcessing\OrderPaymentProcessor, which is 0
 
     ThreeBRS\SyliusPaymentFeePlugin\Model\Taxation\Applicator\OrderPaymentTaxesApplicator:
         arguments:

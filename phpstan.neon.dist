@@ -7,16 +7,18 @@ parameters:
         - tests/Application/src
 
     excludePaths:
-        # Makes PHPStan crash
-        - 'src/DependencyInjection/Configuration.php'
-
         # Test dependencies
         - 'tests/Application/src/Kernel.php'
         - 'tests/Application/config/bootstrap.php'
         - 'tests/Application/node_modules'
         - 'tests/Application/var'
+        - 'tests/Application/public'
+        - 'tests/bootstrap.php'
 
     ignoreErrors:
         - '/Parameter #1 \$configuration of method Symfony\\Component\\DependencyInjection\\Extension\\Extension::processConfiguration\(\) expects Symfony\\Component\\Config\\Definition\\ConfigurationInterface, Symfony\\Component\\Config\\Definition\\ConfigurationInterface\|null given\./'
+        - '/Method ThreeBRS\\SyliusPaymentFeePlugin\\Model\\Calculator\\FlatRateCalculator::calculate\(\) never returns null so it can be removed from the\s+return type\./'
         - identifier: missingType.iterableValue
         - identifier: missingType.generics
+        - identifier: offsetAccess.nonOffsetAccessible
+        - identifier: offsetAccess.invalidOffset

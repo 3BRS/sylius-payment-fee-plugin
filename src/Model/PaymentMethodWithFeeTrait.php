@@ -17,6 +17,7 @@ trait PaymentMethodWithFeeTrait
     #[ORM\JoinColumn(name: 'tax_category_id', nullable: true)]
     protected ?TaxCategoryInterface $taxCategory = null;
 
+    /** @var array<string, mixed>|null */
     #[ORM\Column(name: 'calculator_configuration', type: 'json', nullable: true)]
     protected ?array $calculatorConfiguration = [];
 
@@ -30,11 +31,17 @@ trait PaymentMethodWithFeeTrait
         $this->calculator = $calculator;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getCalculatorConfiguration(): array
     {
         return $this->calculatorConfiguration ?? [];
     }
 
+    /**
+     * @param array<string, mixed> $calculatorConfiguration
+     */
     public function setCalculatorConfiguration(?array $calculatorConfiguration): void
     {
         $this->calculatorConfiguration = $calculatorConfiguration;

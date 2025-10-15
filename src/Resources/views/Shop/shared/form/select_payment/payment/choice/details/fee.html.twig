@@ -1,0 +1,16 @@
+{% import "@SyliusShop/shared/macro/money.html.twig" as money %}
+
+{# Access context from hookable metadata #}
+{% set parent_form = hookable_metadata.context.parent_form|default(null) %}
+{% set method = hookable_metadata.context.method|default(null) %}
+
+{# Get the fee for this payment method using the method code #}
+{% if parent_form and method and parent_form.method.vars.payment_costs is defined %}
+    {% set fee = parent_form.method.vars.payment_costs[method.code]|default(0) %}
+
+    {% if fee > 0 %}
+        <div class="float-end" {{ sylius_test_html_attribute('payment-method-fee') }}>
+            {{ money.convertAndFormat(fee) }}
+        </div>
+    {% endif %}
+{% endif %}

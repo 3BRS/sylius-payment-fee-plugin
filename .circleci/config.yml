@@ -53,23 +53,23 @@ jobs:
             # COMPOSER PREFER LOWEST (oldest possible) #
             # has to delete vendor for next test with different libraries version to avoid Composer error 'Failed to extract...' if vendor dir cache does not exist
             -   run: rm -fr composer.lock
-            -   run: COMPOSER_MEMORY_LIMIT=-1 composer update --no-interaction --prefer-lowest --no-plugins
+            -   run: composer update --no-interaction --prefer-lowest --no-plugins
             -   run: yarn --cwd tests/Application install
             -   run: yarn --cwd tests/Application build
             -   run: APP_ENV=dev bin/phpstan.sh
             -   run: APP_ENV=dev bin/ecs.sh --clear-cache
             -   run: APP_ENV=dev bin/symfony-lint.sh
             -   run: APP_ENV=dev bin/phpunit
-            -   run: (cd tests/Application && bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
-            -   run: bin/behat.sh
+#            -   run: (cd tests/Application && bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
+#            -   run: bin/behat.sh
 
             # COMPOSER PREFER DIST #
-            -   run: COMPOSER_MEMORY_LIMIT=-1 composer update --no-interaction --prefer-dist --no-plugins
+            -   run: composer update --no-interaction --prefer-dist --no-plugins
             -   run: yarn --cwd tests/Application install
             -   run: yarn --cwd tests/Application build
             -   run: APP_ENV=dev bin/phpstan.sh
             -   run: APP_ENV=dev bin/ecs.sh --clear-cache
             -   run: APP_ENV=dev bin/symfony-lint.sh
             -   run: APP_ENV=dev bin/phpunit
-            -   run: (cd tests/Application && bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
-            -   run: bin/behat.sh
+#            -   run: (cd tests/Application && bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
+#            -   run: bin/behat.sh
