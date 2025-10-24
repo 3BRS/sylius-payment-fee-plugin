@@ -1,7 +1,15 @@
 {
   "name": "3brs/sylius-payment-fee-plugin",
 	"type": "sylius-plugin",
-	"description": "404 log plugin for Sylius",
+	"description": "Payment extra fee plugin for Sylius",
+	"keywords": [
+		"sylius",
+		"sylius-plugin",
+		"plugin",
+		"payment",
+		"extra",
+		"fee"
+	],
 	"license": "MIT",
 	"require": {
 		"php": "^8.2",
