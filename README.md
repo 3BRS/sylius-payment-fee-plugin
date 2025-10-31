@@ -25,6 +25,7 @@
 * Taxes are implemented the same way as taxes for shipping fees
 
 ### Admin
+
 <p align="center">
  <img src="./doc/admin_payment_fee_configuration.png" style="max-width: 500px" alt="Admin payment fee configuration"/>
 </p>
@@ -47,15 +48,26 @@
       ThreeBRS\SyliusPaymentFeePlugin\ThreeBRSSyliusPaymentFeePlugin::class => ['all' => true],
    ];
    ```
-3. Your Entity `PaymentMethod` has to implement `\ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface`. You can use Trait `ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeTrait`.
+3. Add plugin configuration to your `config/packages/_sylius.yaml`
 
-   - see [test PaymentMethod](tests/Application/src/Entity/PaymentMethod.php) for inspiration
+   ```yaml
+   imports:
+      - { resource: "@ThreeBRSSyliusPaymentFeePlugin/Resources/config/config.yaml" }
+   ```
 
-For guide how to use your own entity see [Sylius docs - Customizing Models](https://docs.sylius.com/en/latest/customization/model.html)
+4. Your Entity `PaymentMethod` has to implement `\ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeInterface`.
+   You can use Trait `ThreeBRS\SyliusPaymentFeePlugin\Model\PaymentMethodWithFeeTrait`.
 
-4. **JavaScript Integration** - Register the Stimulus controller for dynamic calculator configuration forms:
+    - see [test PaymentMethod](tests/Application/src/Entity/PaymentMethod.php) for inspiration
 
-   The plugin includes a Stimulus controller (`payment-calculator_controller.js`) that handles dynamic prototype forms for payment method calculator configuration. This allows the calculator configuration fields to appear/change dynamically when you select a calculator type in the admin panel.
+   For guide how to use your own entity
+   see [Sylius docs - Customizing Models](https://docs.sylius.com/en/latest/customization/model.html)
+
+5. **JavaScript Integration** - Register the Stimulus controller for dynamic calculator configuration forms:
+
+   The plugin includes a Stimulus controller (`payment-calculator_controller.js`) that handles dynamic prototype forms
+   for payment method calculator configuration. This allows the calculator configuration fields to appear/change
+   dynamically when you select a calculator type in the admin panel.
 
    **Manual Steps Required:**
 
@@ -63,7 +75,7 @@ For guide how to use your own entity see [Sylius docs - Customizing Models](http
 
       ```javascript
       import { startStimulusApp } from '@symfony/stimulus-bridge';
-      import PaymentCalculatorController from '../vendor/3brs/sylius-payment-fee-plugin/src/Resources/assets/admin/controllers/payment-calculator_controller';
+      import PaymentCalculatorController from '../../vendor/3brs/sylius-payment-fee-plugin/src/Resources/assets/admin/controllers/payment-calculator_controller';
 
       // Start Stimulus app
       export const app = startStimulusApp();
@@ -79,12 +91,14 @@ For guide how to use your own entity see [Sylius docs - Customizing Models](http
       ```
 
    **How it works:**
-   - When you select a calculator type (e.g., "Flat rate") in the payment method form, the controller dynamically loads the appropriate configuration fields
-   - On the edit page, it preserves existing saved values
-   - On the create page, it initializes empty fields for the selected calculator
-   - The controller uses Stimulus data attributes: `data-controller="payment-calculator"`, `data-payment-calculator-target="select"`, and `data-payment-calculator-target="container"`
+    - When you select a calculator type (e.g., "Flat rate") in the payment method form, the controller dynamically loads
+      the appropriate configuration fields
+    - On the edit page, it preserves existing saved values
+    - On the create page, it initializes empty fields for the selected calculator
+    - The controller uses Stimulus data attributes: `data-controller="payment-calculator"`,
+      `data-payment-calculator-target="select"`, and `data-payment-calculator-target="container"`
 
-5. Create and run doctrine database migrations:
+6. Create and run doctrine database migrations:
    ```bash
    bin/console doctrine:migrations:diff
    bin/console doctrine:migrations:migrate
