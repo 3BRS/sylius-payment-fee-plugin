@@ -23,6 +23,10 @@ final class PaymentChargesProcessor implements OrderProcessorInterface
     {
         assert($order instanceof OrderInterface);
 
+        if (!$order->canBeProcessed()) {
+            return;
+        }
+
         $order->removeAdjustments(AdjustmentInterface::PAYMENT_ADJUSTMENT);
 
         foreach ($order->getPayments() as $payment) {
