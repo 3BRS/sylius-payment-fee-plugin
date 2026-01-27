@@ -26,7 +26,7 @@ class OrderPaymentTaxesApplicator implements OrderTaxesApplicatorInterface
     private function getPaymentFee(OrderInterface $order): int
     {
         $paymentFees = $order->getAdjustmentsRecursively(AdjustmentInterface::PAYMENT_ADJUSTMENT);
-        if (!$paymentFees->count()) {
+        if ($paymentFees->count() === 0) {
             return 0;
         }
 
