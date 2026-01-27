@@ -22,8 +22,8 @@ class FlatRateConfigurationType extends AbstractType
                 [
                 'label' => 'threebrs.form.payment_calculator.flat_rate_configuration.amount',
                 'constraints' => [
-                    new NotBlank(['groups' => ['sylius']]),
-                    new Type(['type' => 'integer', 'groups' => ['sylius']]),
+                    new NotBlank(groups: ['sylius']),
+                    new Type(type: 'integer', groups: ['sylius']),
                 ],
                 'currency' => $options['currency'],
             ],

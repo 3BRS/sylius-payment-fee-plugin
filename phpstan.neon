@@ -1,0 +1,48 @@
+parameters:
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
+    excludePaths:
+        - tests/Application/var/*
+        - tests/Application/node_modules/*
+        - tests/Application/public/index.php
+        - tests/Application/config/bootstrap.php
+        - tests/Application/config/bundles.php
+        - tests/Application/config/reference.php
+        - tests/bootstrap.php
+
+    ignoreErrors:
+        # Symfony Form generic types
+        -
+            identifier: missingType.generics
+        # Missing iterable value types in array parameters
+        -
+            identifier: missingType.iterableValue
+        # empty() usage - acceptable for array checks
+        -
+            identifier: empty.notAllowed
+            path: src/Form/*
+        # FormTypeRegistry returns string|null, not class-string
+        -
+            identifier: argument.type
+            path: src/Form/Extension/PaymentMethodTypeExtension.php
+        # Runtime assertions for interface contracts
+        -
+            identifier: instanceof.alwaysTrue
+        -
+            identifier: function.alreadyNarrowedType
+        # Kernel registerBundles generator
+        -
+            identifier: foreach.nonIterable
+            path: tests/Application/src/Kernel.php
+        -
+            identifier: offsetAccess.nonOffsetAccessible
+            path: tests/Application/src/Kernel.php
+        -
+            identifier: generator.valueType
+            path: tests/Application/src/Kernel.php
+
+includes:
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-webmozart-assert/extension.neon
