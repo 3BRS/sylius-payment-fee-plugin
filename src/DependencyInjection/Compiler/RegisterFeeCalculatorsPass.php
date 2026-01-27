@@ -24,7 +24,7 @@ final class RegisterFeeCalculatorsPass implements CompilerPassInterface
         $calculators = [];
 
         foreach ($container->findTaggedServiceIds(DelegatingCalculator::class) as $id => $attributes) {
-            if (!$attributes) {
+            if (count($attributes) === 0) {
                 continue;
             }
             assert(is_array($attributes[0]) || $attributes[0] instanceof \ArrayAccess);

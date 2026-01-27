@@ -1,15 +1,15 @@
 version: 2.1
 
 workflows:
-    sylius2.0-php8.2+:
+    sylius2.x-tests:
         jobs:
             -   build:
                     name: php-<<matrix.php_version>>-sylius-<< matrix.sylius_version >>-symfony-<< matrix.symfony_version >>
                     matrix:
                         parameters:
-                            sylius_version: [ "2.0" ]
-                            php_version: [ "8.2", "8.3" ]
-                            symfony_version: [ "6.4", "7.1" ]
+                            sylius_version: [ "2.1", "2.2" ]
+                            php_version: [ "8.3" ]
+                            symfony_version: [ "7.4" ]
 
 jobs:
     build:
@@ -43,7 +43,7 @@ jobs:
 
             # Sylius & Symfony in current matrix versions
             -   run: composer require "sylius/sylius:<< parameters.sylius_version >>.*" --no-interaction --no-update --no-scripts
-            -   run: grep -o -E '"(symfony/[^"]+)"' composer.json | grep -v -E '(symfony/flex|symfony/webpack-encore-bundle)' | xargs printf '%s:<< parameters.symfony_version >>.* '| xargs composer require --no-interaction --no-update
+            -   run: grep -o -E '"(symfony/[^"]+)"' composer.json | grep -v -E '(symfony/flex|symfony/webpack-encore-bundle|symfony/maker-bundle)' | xargs printf '%s:<< parameters.symfony_version >>.* '| xargs composer require --no-interaction --no-update
 
             -   run:
                     name: Wait for database
