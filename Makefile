@@ -1,17 +1,18 @@
-.PHONY: run init var yarn fix
+.PHONY: run init var yarn ci fix ecs bash static cache behat tests
+
+MAKEFLAGS += --no-print-directory # to disable "make: Entering directory ..." messages
 
 run: init
 
 init:
 	which docker > /dev/null || (echo "Please install docker binary" && exit 1)
-	if command -v direnv >/dev/null; then \
+	if command -v direnv &> /dev/null; then \
 		cp --update=none .envrc.dist .envrc; \
 		direnv allow; \
 	fi
 	docker compose up -d
 	rm -f composer.lock
 	./bin-docker/composer install --no-interaction
-	rm -fr "tests/Application/var/$(APP_ENV)"
 	@make var
 	./bin-docker/php ./bin/console doctrine:database:create --no-interaction --if-not-exists
 	./bin-docker/php ./bin/console doctrine:migrations:migrate --no-interaction
@@ -20,19 +21,18 @@ init:
 	./bin-docker/php ./bin/console assets:install
 	./bin-docker/yarn --cwd=tests/Application install --pure-lockfile
 	GULP_ENV=prod ./bin-docker/yarn --cwd=tests/Application build
-	chmod -R 0777 tests/Application/var
-	chmod -R 0777 tests/Application/public
+	./bin-docker/php ./bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction
+	@make var
 
 init-tests:
 	which docker > /dev/null || (echo "Please install docker binary" && exit 1)
-	if command -v direnv >/dev/null; then \
+	if command -v direnv &> /dev/null; then \
 		cp --update=none .envrc.dist .envrc; \
 		direnv allow; \
 	fi
 	docker compose up -d
 	rm -f composer.lock
 	./bin-docker/composer install --no-interaction
-	rm -fr tests/Application/var/test
 	@make var
 	./bin-docker/php ./bin/console --env=test doctrine:database:drop --no-interaction --force --if-exists
 	./bin-docker/php ./bin/console --env=test doctrine:database:create --no-interaction --if-not-exists
@@ -42,6 +42,7 @@ init-tests:
 	./bin-docker/php ./bin/console --env=test assets:install
 	./bin-docker/yarn --cwd=tests/Application install --pure-lockfile
 	GULP_ENV=prod ./bin-docker/yarn --cwd=tests/Application build
+	./bin-docker/php ./bin/console --env=test lexik:jwt:generate-keypair --skip-if-exists --no-interaction
 	@make var
 
 cache:
@@ -61,6 +62,12 @@ static-only:
 
 phpstan:
 	./bin-docker/docker-bash bin/phpstan.sh
+
+behat:
+	./bin-docker/docker-bash bin/behat.sh
+
+phpunit:
+	./bin-docker/php bin/phpunit
 
 ecs:
 	./bin-docker/docker-bash bin/ecs.sh
@@ -99,16 +106,17 @@ bare-fixtures:
 var:
 	docker compose run --rm --user root php rm -fr tests/Application/var
 	mkdir -p tests/Application/var/log
+	mkdir -p tests/Application/public/media/image
 	touch tests/Application/var/log/test.log
 	touch tests/Application/var/log/dev.log
 	chmod -R 0777 tests/Application/var
-	docker compose run --rm --user root php rm -fr tests/Application/public/media/cache
-	mkdir -p tests/Application/public/media/cache
-	chmod -R 0777 tests/Application/public/media/cache
+	docker compose run --rm --user root php chmod -R 0777 tests/Application/public/media
 
 fixtures: schema-reset bare-fixtures var
 
-tests: static
+static: phpstan ecs lint
+
+tests: static # phpunit behat
 
 ci: init-tests tests
 
