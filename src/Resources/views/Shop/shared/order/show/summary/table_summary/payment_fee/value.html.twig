@@ -6,11 +6,9 @@
     {% set paymentFeeAdjustment = constant('ThreeBRS\\SyliusPaymentFeePlugin\\Model\\AdjustmentInterface::PAYMENT_ADJUSTMENT') %}
     {% set paymentFeeAdjustmentTotal = order.getAdjustmentsTotal(paymentFeeAdjustment) %}
 
-    {% if paymentFeeAdjustmentTotal > 0 %}
-        <td class="text-end">
-            <div {{ sylius_test_html_attribute('payment-total') }}>
-                {{ money.convertAndFormat(paymentFeeAdjustmentTotal) }}
-            </div>
-        </td>
-    {% endif %}
+    <td class="text-end">
+        <div {{ sylius_test_html_attribute('payment-total') }}>
+            {{ money.convertAndFormat(paymentFeeAdjustmentTotal) }}
+        </div>
+    </td>
 {% endif %}

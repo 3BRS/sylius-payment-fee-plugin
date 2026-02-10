@@ -12,10 +12,18 @@ ini_set('memory_limit', $_SERVER['APP_MEMORY_LIMIT'] ?? ($_ENV['APP_MEMORY_LIMIT
 
 if (($_SERVER['APP_ENV'] ?? '') === 'test'
     && (!empty($_ENV['APP_SUPPRESS_DEPRECATED_ERRORS'])
-        || (Kernel::MAJOR_VERSION < 6 && PHP_MAJOR_VERSION >= 8)
+        || PHP_MAJOR_VERSION >= 8
     )
 ) {
-    // to avoid Behat errors like --- Failed scenarios: 8192: Function libxml_disable_entity_loader() is deprecated in vendor/symfony/dom-crawler/Crawler.php line 1183
+    // Suppress E_DEPRECATED errors during Behat tests to avoid vendor-related deprecations
+    // that we cannot fix directly. This includes:
+    // - PHP 8.1+: strtolower(null) deprecations in symfony/css-selector (NodeExtension.php:163)
+    // - PHP 8.0+: libxml_disable_entity_loader() deprecations in symfony/dom-crawler
+    //
+    // This suppression only affects the test environment and can be disabled by setting
+    // APP_SUPPRESS_DEPRECATED_ERRORS=0 in .env.test.local if needed.
+    //
+    // TODO: Remove this when Symfony fixes the underlying deprecations in css-selector
     error_reporting(E_ALL ^ E_DEPRECATED);
 }
 

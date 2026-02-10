@@ -9,7 +9,7 @@ workflows:
                         parameters:
                             sylius_version: [ "2.1", "2.2" ]
                             php_version: [ "8.3" ]
-                            symfony_version: [ "7.4" ]
+                            symfony_version: [ "6.4", "7.4" ]
 
 jobs:
     build:
@@ -20,56 +20,56 @@ jobs:
                 type: string
             php_version:
                 type: string
-        docker:
-            -   image: webdevops/php-nginx:<< parameters.php_version >>
-                environment:
-                    - DATABASE_URL=mysql://root:pass_root@127.0.0.1:3306/3brs_sylius_payment_fee_plugin_%kernel.environment%?serverVersion=8.0
-            -   image: cimg/mysql:8.0
-                environment:
-                    MYSQL_ROOT_PASSWORD: pass_root
-                    MYSQL_USER: sylius
-                    MYSQL_PASSWORD: pass
+        machine:
+            image: ubuntu-2204:current
 
         steps:
             - checkout
-            # to avoid installing different package "Note, selecting 'cmdtest' instead of 'yarn'"
-            -   run: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-            -   run: echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-            -   run: curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-            -   run: apt-get update
-                # netcat to get 'nc' command for waiting for database
-            -   run: apt-get install -y nodejs yarn mariadb-client netcat-openbsd
-            -   run: composer self-update
+            -   run:
+                    name: Build and start Docker containers
+                    command: |
+                        docker compose build --build-arg PHP_VERSION=<< parameters.php_version >>
+                        docker compose up -d
+            -   run: mkdir -p etc/build
 
             # Sylius & Symfony in current matrix versions
-            -   run: composer require "sylius/sylius:<< parameters.sylius_version >>.*" --no-interaction --no-update --no-scripts
-            -   run: grep -o -E '"(symfony/[^"]+)"' composer.json | grep -v -E '(symfony/flex|symfony/webpack-encore-bundle|symfony/maker-bundle)' | xargs printf '%s:<< parameters.symfony_version >>.* '| xargs composer require --no-interaction --no-update
+            -   run: ./bin-docker/composer require "sylius/sylius:<< parameters.sylius_version >>.*" --no-interaction --no-update --no-scripts
+            -   run: grep -o -E '"(symfony/[^"]+)"' composer.json | grep -v -E '(symfony/flex|symfony/webpack-encore-bundle|symfony/maker-bundle|symfony/panther)' | xargs printf '%s:<< parameters.symfony_version >>.* '| xargs ./bin-docker/composer require --no-interaction --no-update
 
             -   run:
                     name: Wait for database
-                    command: timeout 60s bash -c -- 'while ! nc -z 127.0.0.1 3306; do sleep 0.1; done' \
-                        && timeout 30s bash -c -- 'mysql --user=sylius --password=pass --host=127.0.0.1 --port=3306 -e "exit"'
+                    command: timeout 60s bash -c -- 'while ! docker compose exec -T mysql mysqladmin ping -h localhost --silent; do sleep 1; done'
+
+            # COMPOSER PREFER DIST #
+            -   run: ./bin-docker/composer update --no-interaction --prefer-dist --no-plugins
+            -   run: ./bin-docker/docker-bash -c "rm -fr tests/Application/var/cache/*/*"
+            -   run: ./bin-docker/yarn --cwd tests/Application install
+            -   run: GULP_ENV=prod ./bin-docker/yarn --cwd tests/Application build
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console cache:clear --env=test)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console cache:warmup --env=test)
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/phpstan.sh"
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/ecs.sh --clear-cache"
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/symfony-lint.sh"
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/phpunit"
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:create --env=test -vvv)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:schema:create --env=test -vvv)
+            -   run: ./bin-docker/docker-bash bin/behat.sh
 
             # COMPOSER PREFER LOWEST (oldest possible) #
             # has to delete vendor for next test with different libraries version to avoid Composer error 'Failed to extract...' if vendor dir cache does not exist
             -   run: rm -fr composer.lock
-            -   run: composer update --no-interaction --prefer-lowest --no-plugins
-            -   run: yarn --cwd tests/Application install
-            -   run: yarn --cwd tests/Application build
-            -   run: APP_ENV=dev bin/phpstan.sh
-            -   run: APP_ENV=dev bin/ecs.sh --clear-cache
-            -   run: APP_ENV=dev bin/symfony-lint.sh
-            -   run: APP_ENV=dev bin/phpunit
-#            -   run: (cd tests/Application && bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
-#            -   run: bin/behat.sh
-
-            # COMPOSER PREFER DIST #
-            -   run: composer update --no-interaction --prefer-dist --no-plugins
-            -   run: yarn --cwd tests/Application install
-            -   run: yarn --cwd tests/Application build
-            -   run: APP_ENV=dev bin/phpstan.sh
-            -   run: APP_ENV=dev bin/ecs.sh --clear-cache
-            -   run: APP_ENV=dev bin/symfony-lint.sh
-            -   run: APP_ENV=dev bin/phpunit
-#            -   run: (cd tests/Application && bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
-#            -   run: bin/behat.sh
+            -   run: ./bin-docker/composer update --no-interaction --prefer-lowest --no-plugins
+            -   run: ./bin-docker/docker-bash -c "rm -fr tests/Application/var/cache/*/*"
+            -   run: ./bin-docker/yarn --cwd tests/Application install
+            -   run: GULP_ENV=prod ./bin-docker/yarn --cwd tests/Application build
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console cache:clear --env=test)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console cache:warmup --env=test)
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/phpstan.sh"
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/ecs.sh --clear-cache"
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/symfony-lint.sh"
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/phpunit"
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:create --env=test -vvv)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:schema:create --env=test -vvv)
+            -   run: ./bin-docker/docker-bash bin/behat.sh

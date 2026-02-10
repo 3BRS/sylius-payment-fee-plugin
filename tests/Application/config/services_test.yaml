@@ -1,4 +1,61 @@
 # workaround needed for strange "test.client.history" problem
 # see https://github.com/FriendsOfBehat/SymfonyExtension/issues/88
+imports:
+    - { resource: '../../../vendor/sylius/sylius/src/Sylius/Behat/Resources/config/services.xml' }
+
 services:
     Symfony\Component\BrowserKit\AbstractBrowser: '@test.client'
+
+    # Behat contexts
+    Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Setup\ChannelContext:
+        arguments:
+            - '@sylius.factory.channel'
+            - '@sylius.factory.currency'
+            - '@sylius.factory.locale'
+            - '@sylius.factory.country'
+            - '@sylius.factory.zone'
+            - '@sylius.factory.zone_member'
+            - '@sylius.factory.shipping_method'
+            - '@sylius.repository.channel'
+            - '@sylius.repository.currency'
+            - '@sylius.repository.locale'
+            - '@sylius.repository.country'
+            - '@sylius.repository.zone'
+            - '@sylius.repository.shipping_method'
+            - '@doctrine.orm.entity_manager'
+        public: true
+
+    Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Setup\PaymentMethodSetupContext:
+        arguments:
+            - '@sylius.factory.payment_method'
+            - '@sylius.repository.payment_method'
+            - '@sylius.repository.channel'
+            - '@doctrine.orm.entity_manager'
+            - '@sylius.factory.gateway_config'
+        public: true
+
+    Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Setup\PaymentMethodVerificationContext:
+        arguments:
+            - '@sylius.repository.payment_method'
+        public: true
+
+    Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Ui\CheckoutContext:
+        arguments:
+            - '@sylius.factory.product'
+            - '@sylius.factory.product_variant'
+            - '@sylius.factory.channel_pricing'
+            - '@sylius.factory.customer'
+            - '@sylius.factory.order'
+            - '@sylius.factory.order_item'
+            - '@sylius.repository.product'
+            - '@sylius.repository.customer'
+            - '@sylius.repository.order'
+            - '@sylius.repository.channel'
+            - '@doctrine.orm.entity_manager'
+        public: true
+
+    Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Hook\PantherServerContext:
+        public: true
+
+    Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Ui\PaymentFeeContext:
+        public: true
