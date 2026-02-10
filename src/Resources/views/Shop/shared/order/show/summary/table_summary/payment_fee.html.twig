@@ -1,3 +1,13 @@
-<tr>
-    {% hook 'payment_fee' %}
-</tr>
+{# Access order from hookable metadata context #}
+{% set order = hookable_metadata.context.resource|default(hookable_metadata.context.order)|default(null) %}
+
+{% if order %}
+    {% set paymentFeeAdjustment = constant('ThreeBRS\\SyliusPaymentFeePlugin\\Model\\AdjustmentInterface::PAYMENT_ADJUSTMENT') %}
+    {% set paymentFeeAdjustmentTotal = order.getAdjustmentsTotal(paymentFeeAdjustment) %}
+
+    {% if paymentFeeAdjustmentTotal > 0 %}e
+        <tr>
+            {% hook 'payment_fee' %}
+        </tr>
+    {% endif %}
+{% endif %}

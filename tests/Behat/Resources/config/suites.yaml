@@ -1,0 +1,3 @@
+imports:
+    - tests/Behat/Resources/config/suites/ui_checkout.yaml
+    - tests/Behat/Resources/config/suites/payment_fee_verification.yaml

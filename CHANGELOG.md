@@ -2,9 +2,16 @@
 
 ## v2.1.0 (2026-01-27)
 
-- Add support for Sylius 2.1 and 2.2
-- Drop support for Sylius 2.0
-- Require PHP 8.3+ and Symfony 7.4
+### Changed
+- **BREAKING**: Requires Sylius ^2.1 (drop support for Sylius 2.0)
+- **BREAKING**: Requires PHP 8.2+
+- **BREAKING**: Requires Symfony ^7.4 (drop support for 6.4, Symfony 7.1, 7.2, 7.3 are not supported per Sylius requirements)
+- Added compatibility with Sylius 2.2
+- Updated Rector to PHP 8.2 level set
+
+### Fixed
+- Enabled Doctrine lazy ghost objects for better PHP 8.4 compatibility
+- Added Symfony 8.0 package conflicts (`symfony/error-handler`, `symfony/var-exporter`) to prevent dependency issues on PHP 8.4
 
 ## v2.0.0 (2025-10-15)
 

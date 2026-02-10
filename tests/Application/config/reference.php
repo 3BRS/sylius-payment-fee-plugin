@@ -2349,9 +2349,12 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     },
  *     drivers?: list<"doctrine/orm"|"doctrine/mongodb-odm"|"doctrine/phpcr-odm"|Param>,
  *     mapping?: array{
+ *         imports?: list<scalar|Param|null>,
  *         paths?: list<scalar|Param|null>,
  *     },
  *     authorization_checker?: scalar|Param|null, // Default: "sylius.resource_controller.authorization_checker.disabled"
+ *     routing_path_bc_layer?: bool|Param,
+ *     path_segment_name_generator?: scalar|Param|null, // Specify a path name generator to use. // Default: "sylius.metadata.path_segment_name_generator.dash"
  * }
  * @psalm-type SyliusGridConfig = array{
  *     drivers?: list<"doctrine/orm"|"doctrine/phpcr-odm"|Param>,

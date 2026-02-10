@@ -32,7 +32,7 @@ final class PaymentChargesProcessor implements OrderProcessorInterface
         foreach ($order->getPayments() as $payment) {
             $paymentCharge = $this->paymentChargesCalculator->calculate($payment);
 
-            if ($paymentCharge === null) {
+            if ($paymentCharge === null || $paymentCharge === 0) {
                 continue;
             }
 

@@ -16,7 +16,7 @@ init:
 	@make var
 	./bin-docker/php ./bin/console doctrine:database:create --no-interaction --if-not-exists
 	./bin-docker/php ./bin/console doctrine:migrations:migrate --no-interaction
-	./bin-docker/php ./bin/console doctrine:schema:update --force --complete --no-interaction
+	./bin-docker/php ./bin/console doctrine:schema:update --force --no-interaction
 	./bin-docker/php ./bin/console doctrine:migration:sync-metadata-storage
 	./bin-docker/php ./bin/console assets:install
 	./bin-docker/yarn --cwd=tests/Application install --pure-lockfile
@@ -63,8 +63,14 @@ static-only:
 phpstan:
 	./bin-docker/docker-bash bin/phpstan.sh
 
-behat:
+behat: behat-db-setup
 	./bin-docker/docker-bash bin/behat.sh
+
+behat-db-setup:
+	./bin-docker/php ./bin/console --env=test doctrine:database:drop --force --if-exists
+	./bin-docker/php ./bin/console --env=test doctrine:database:create --no-interaction
+	./bin-docker/php ./bin/console --env=test doctrine:migrations:migrate --no-interaction
+	./bin-docker/php ./bin/console --env=test doctrine:schema:update --force --no-interaction
 
 phpunit:
 	./bin-docker/php bin/phpunit
@@ -116,7 +122,7 @@ fixtures: schema-reset bare-fixtures var
 
 static: phpstan ecs lint
 
-tests: static # phpunit behat
+tests: static behat
 
 ci: init-tests tests
 
