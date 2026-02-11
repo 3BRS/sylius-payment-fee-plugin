@@ -7,9 +7,11 @@ workflows:
                     name: php-<<matrix.php_version>>-sylius-<< matrix.sylius_version >>-symfony-<< matrix.symfony_version >>
                     matrix:
                         parameters:
+                            # Testing both Sylius 2.1 and 2.2 with Symfony 7.4
+                            # Symfony 6.4 support dropped due to doctrine/annotations compatibility issues
                             sylius_version: [ "2.1", "2.2" ]
-                            php_version: [ "8.3" ]
-                            symfony_version: [ "6.4", "7.4" ]
+                            php_version: [ "8.2", "8.3" ]
+                            symfony_version: [ "7.4" ]
 
 jobs:
     build:

@@ -74,8 +74,9 @@ echo "Step 0: Backup original composer.json"
 cp composer.json composer.json.backup
 
 # Matrix parameters from CircleCI config
+# Testing both Sylius 2.1 and 2.2 with Symfony 7.4 only
 SYLIUS_VERSIONS=("2.1" "2.2")
-SYMFONY_VERSIONS=("6.4" "7.4")
+SYMFONY_VERSIONS=("7.4")
 COMPOSER_PREFERENCES=("prefer-dist" "prefer-lowest")
 
 # Run all combinations
