@@ -43,8 +43,8 @@ run_test_suite() {
     GULP_ENV=prod ./bin-docker/yarn --cwd tests/Application build
 
     # Cache clear and warmup
-    (cd tests/Application && ../../bin-docker/php bin/console cache:clear --env=test)
-    (cd tests/Application && ../../bin-docker/php bin/console cache:warmup --env=test)
+    ./bin-docker/php bin/console cache:clear --env=test
+    ./bin-docker/php bin/console cache:warmup --env=test
 
     # Run static analysis
     ./bin-docker/docker-bash -c "APP_ENV=dev bin/phpstan.sh"
@@ -55,9 +55,9 @@ run_test_suite() {
     ./bin-docker/docker-bash -c "APP_ENV=dev bin/phpunit"
 
     # Setup test database
-    (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
-    (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:create --env=test -vvv)
-    (cd tests/Application && ../../bin-docker/php bin/console doctrine:schema:create --env=test -vvv)
+    ./bin-docker/php bin/console doctrine:database:drop --if-exists --env=test -vvv --force
+    ./bin-docker/php bin/console doctrine:database:create --env=test -vvv
+    ./bin-docker/php bin/console doctrine:schema:create --env=test -vvv
 
     # Run Behat tests
     ./bin-docker/docker-bash bin/behat.sh
