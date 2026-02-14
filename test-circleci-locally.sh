@@ -73,11 +73,38 @@ echo ""
 echo "Step 0: Backup original composer.json"
 cp composer.json composer.json.backup
 
-# Matrix parameters from CircleCI config
-# Testing both Sylius 2.1 and 2.2 with Symfony 7.4 only
-SYLIUS_VERSIONS=("2.1" "2.2")
-SYMFONY_VERSIONS=("7.4")
+# Parse matrix parameters from CircleCI config
+echo "Step 1: Parsing version matrices from .circleci/config.yml"
+if [ ! -f .circleci/config.yml ]; then
+    echo "Error: .circleci/config.yml not found!"
+    exit 1
+fi
+
+# Extract sylius_version array from CircleCI config
+# Looks for: sylius_version: [ "2.1", "2.2" ]
+SYLIUS_LINE=$(grep 'sylius_version:' .circleci/config.yml | head -n 1)
+if [ -z "$SYLIUS_LINE" ]; then
+    echo "Error: Could not find sylius_version in .circleci/config.yml"
+    exit 1
+fi
+# Extract versions from the array format: [ "2.1", "2.2" ]
+SYLIUS_VERSIONS=($(echo "$SYLIUS_LINE" | grep -o '"[0-9.]*"' | tr -d '"'))
+
+# Extract symfony_version array from CircleCI config
+SYMFONY_LINE=$(grep 'symfony_version:' .circleci/config.yml | head -n 1)
+if [ -z "$SYMFONY_LINE" ]; then
+    echo "Error: Could not find symfony_version in .circleci/config.yml"
+    exit 1
+fi
+SYMFONY_VERSIONS=($(echo "$SYMFONY_LINE" | grep -o '"[0-9.]*"' | tr -d '"'))
+
+# Composer preferences (hardcoded as these match CircleCI steps)
 COMPOSER_PREFERENCES=("prefer-dist" "prefer-lowest")
+
+echo "  - Sylius versions: ${SYLIUS_VERSIONS[*]}"
+echo "  - Symfony versions: ${SYMFONY_VERSIONS[*]}"
+echo "  - Composer preferences: ${COMPOSER_PREFERENCES[*]}"
+echo ""
 
 # Run all combinations
 for sylius_version in "${SYLIUS_VERSIONS[@]}"; do
