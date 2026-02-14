@@ -28,7 +28,7 @@ default:
                     panther:
                         options:
                             browser: chrome
-                            external_base_uri: '%env(PANTHER_EXTERNAL_BASE_URI)%'
+                            external_base_uri: 'http://127.0.0.1:9080'
                         manager_options:
                             connection_timeout_in_ms: 5000
                             request_timeout_in_ms: 120000
@@ -39,6 +39,11 @@ default:
                                 acceptSslCerts: true
                                 acceptInsecureCerts: true
                                 unexpectedAlertBehaviour: accept
+                                goog:chromeOptions:
+                                    args:
+                                        - --no-sandbox
+                                        - --disable-dev-shm-usage
+                                        - --disable-software-rasterizer
             show_auto: false
 
         FriendsOfBehat\SymfonyExtension:

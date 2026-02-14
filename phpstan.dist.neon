@@ -25,9 +25,6 @@ parameters:
         -
             identifier: argument.type
             path: src/Form/Extension/PaymentMethodTypeExtension.php
-        # Runtime assertions for interface contracts
-        -
-            identifier: instanceof.alwaysTrue
         -
             identifier: function.alreadyNarrowedType
         # Kernel registerBundles generator
