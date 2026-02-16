@@ -6,6 +6,8 @@
 !/public/media/image/
 /public/media/image/*
 !/public/media/image/.gitignore
+/config/reference.php
+/yarn.lock
 
 /node_modules
 

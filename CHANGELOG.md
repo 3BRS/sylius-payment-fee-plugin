@@ -7,7 +7,6 @@
 - **BREAKING**: Requires PHP 8.2+
 - **BREAKING**: Requires Symfony ^7.4 (drop support for 6.4, Symfony 7.1, 7.2, 7.3 are not supported per Sylius requirements)
 - Added compatibility with Sylius 2.2
-- Updated Rector to PHP 8.2 level set
 
 ### Fixed
 - Enabled Doctrine lazy ghost objects for better PHP 8.4 compatibility

@@ -1,4 +1,4 @@
-@checkout_payment_fee
+@checkout_payment_fee @verification
 Feature: Payment fee display during checkout
     In order to understand the total cost
     As a Customer
