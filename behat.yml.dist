@@ -9,8 +9,6 @@ default:
             snippets: false
 
     extensions:
-        Robertfausk\Behat\PantherExtension: ~
-
         FriendsOfBehat\MinkDebugExtension:
             directory: etc/build
             clean_start: false
@@ -20,30 +18,9 @@ default:
             files_path: "%paths.base%/vendor/sylius/sylius/src/Sylius/Behat/Resources/fixtures/"
             base_url: "http://127.0.0.1:9080/"
             default_session: symfony
-            javascript_session: panther
             sessions:
                 symfony:
                     symfony: ~
-                panther:
-                    panther:
-                        options:
-                            browser: chrome
-                            external_base_uri: 'http://127.0.0.1:9080'
-                        manager_options:
-                            connection_timeout_in_ms: 5000
-                            request_timeout_in_ms: 120000
-                            chromedriver_arguments:
-                                - --log-path=etc/build/chromedriver.log
-                                - --verbose
-                            capabilities:
-                                acceptSslCerts: true
-                                acceptInsecureCerts: true
-                                unexpectedAlertBehaviour: accept
-                                goog:chromeOptions:
-                                    args:
-                                        - --no-sandbox
-                                        - --disable-dev-shm-usage
-                                        - --disable-software-rasterizer
             show_auto: false
 
         FriendsOfBehat\SymfonyExtension:

@@ -7,4 +7,4 @@ default:
                 - Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Setup\PaymentMethodVerificationContext
 
             filters:
-                tags: "@checkout_payment_fee&&~@javascript"
+                tags: "@checkout_payment_fee&&@verification"

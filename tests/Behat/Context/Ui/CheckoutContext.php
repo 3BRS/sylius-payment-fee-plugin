@@ -111,17 +111,11 @@ final class CheckoutContext extends RawMinkContext implements Context
 
         $this->visitPath(sprintf('/en_US/products/%s', $product->getSlug()));
 
-        // Wait for page to load
-        $this->getSession()->wait(1000);
-
         $page = $this->getSession()->getPage();
         $addToCartButton = $page->find('css', 'button[type="submit"]');
 
         Assert::notNull($addToCartButton, 'Add to cart button not found');
         $addToCartButton->click();
-
-        // Wait for cart to update
-        $this->getSession()->wait(2000);
     }
 
     /**
@@ -131,10 +125,6 @@ final class CheckoutContext extends RawMinkContext implements Context
     {
         $this->visitPath('/en_US/checkout/address');
 
-        // Wait for page to load
-        $this->getSession()->wait(1000);
-
-        // Fill in address form
         $page = $this->getSession()->getPage();
 
         $page->fillField('sylius_shop_checkout_address[customer][email]', 'test@example.com');
@@ -145,26 +135,15 @@ final class CheckoutContext extends RawMinkContext implements Context
         $page->fillField('sylius_shop_checkout_address[billingAddress][postcode]', '10001');
         $page->selectFieldOption('sylius_shop_checkout_address[billingAddress][countryCode]', 'US');
 
-        // Wait for any JavaScript validation
-        $this->getSession()->wait(500);
-
         $nextButton = $page->find('css', 'button[type="submit"]');
         Assert::notNull($nextButton, 'Next button not found on address step');
 
-        // Scroll button into view
-        $this->getSession()->executeScript('window.scrollTo(0, document.body.scrollHeight);');
-        $this->getSession()->wait(500);
-
         $nextButton->click();
 
-        $this->getSession()->wait(2000);
-
-        // Complete shipping step
         $page = $this->getSession()->getPage();
         $nextButton = $page->find('css', 'button[type="submit"]');
         if ($nextButton !== null) {
             $nextButton->click();
-            $this->getSession()->wait(2000);
         }
     }
 
@@ -180,11 +159,6 @@ final class CheckoutContext extends RawMinkContext implements Context
         Assert::notNull($paymentMethodLabel, sprintf('Payment method "%s" not found', $paymentMethodName));
 
         $paymentMethodLabel->click();
-
-        // Wait for payment fee to be calculated
-        $this->getSession()->wait(2000, '
-            typeof window.jQuery !== "undefined" && window.jQuery.active === 0
-        ');
     }
 
     /**

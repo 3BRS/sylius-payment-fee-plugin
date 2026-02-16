@@ -71,6 +71,7 @@ behat-db-setup:
 	./bin-docker/php ./bin/console --env=test doctrine:database:create --no-interaction
 	./bin-docker/php ./bin/console --env=test doctrine:migrations:migrate --no-interaction
 	./bin-docker/php ./bin/console --env=test doctrine:schema:update --force --complete --no-interaction
+	./bin-docker/php ./bin/console --env=test cache:warmup
 
 phpunit:
 	./bin-docker/php bin/phpunit

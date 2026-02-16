@@ -1,4 +1,4 @@
-@checkout_payment_fee
+@checkout_payment_fee @ui
 Feature: Checkout with payment fee
     In order to complete my purchase with payment fees
     As a Customer
@@ -9,7 +9,6 @@ Feature: Checkout with payment fee
         And the store ships everywhere for Free
         And the store allows paying offline
 
-    @javascript
     Scenario: Checkout with non-zero payment fee
         Given the store has a product "Blue T-Shirt" priced at "$20.00"
         And the store has a payment method "Card Payment" with "$5.00" payment fee
@@ -23,7 +22,6 @@ Feature: Checkout with payment fee
         And I choose "Card Payment" payment method
         Then I should see payment fee of "$5.00"
 
-    @javascript
     Scenario: Checkout with zero payment fee
         Given the store has a product "Green Mug" priced at "$15.00"
         And the store has a payment method "Wire Transfer" without payment fee

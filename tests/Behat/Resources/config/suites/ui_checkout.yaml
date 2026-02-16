@@ -2,7 +2,6 @@ default:
     suites:
         ui_checkout_with_payment_fee:
             contexts:
-                - Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Hook\PantherServerContext
                 - sylius.behat.context.hook.doctrine_orm
                 - sylius.behat.context.hook.guest_cart
 
@@ -32,4 +31,4 @@ default:
                 - Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Ui\PaymentFeeContext
 
             filters:
-                tags: "@checkout_payment_fee&&@javascript"
+                tags: "@checkout_payment_fee&&@ui"
