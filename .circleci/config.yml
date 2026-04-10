@@ -54,8 +54,12 @@ jobs:
             -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/phpunit"
             -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
             -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:create --env=test -vvv)
-            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:schema:create --env=test -vvv)
-            -   run: ./bin-docker/docker-bash bin/behat.sh
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:migrations:migrate --no-interaction --env=test -vvv)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:schema:update --complete --force --env=test -vvv)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console cache:clear --env=test -vvv)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console cache:warmup --env=test -vvv)
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=test php vendor/bin/behat"
+            -   run: if [ -f tests/Application/var/log/test.log ]; then tail -n 50 tests/Application/var/log/test.log; fi
 
             # COMPOSER PREFER LOWEST (oldest possible) #
             # has to delete vendor for next test with different libraries version to avoid Composer error 'Failed to extract...' if vendor dir cache does not exist
@@ -72,5 +76,9 @@ jobs:
             -   run: ./bin-docker/docker-bash -c "APP_ENV=dev bin/phpunit"
             -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:drop --if-exists --env=test -vvv --force)
             -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:database:create --env=test -vvv)
-            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:schema:create --env=test -vvv)
-            -   run: ./bin-docker/docker-bash bin/behat.sh
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:migrations:migrate --no-interaction --env=test -vvv)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console doctrine:schema:update --complete --force --env=test -vvv)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console cache:clear --env=test -vvv)
+            -   run: (cd tests/Application && ../../bin-docker/php bin/console cache:warmup --env=test -vvv)
+            -   run: ./bin-docker/docker-bash -c "APP_ENV=test php vendor/bin/behat"
+            -   run: if [ -f tests/Application/var/log/test.log ]; then tail -n 50 tests/Application/var/log/test.log; fi
