@@ -37,6 +37,14 @@
  <img src="doc/checkout_order_summary_with_payment_fee.png" style="max-width: 500px" alt="Checkout order summary with payment fee"/>
 </p>
 
+## Requirements
+
+| Package | Version         |
+|---------|-----------------|
+| PHP     | ^8.2            |
+| Sylius  | ^2.1            |
+| Symfony | ^7.4 \|\| ^8.0  |
+
 ## Installation
 
 1. Run `composer require 3brs/sylius-payment-fee-plugin`
@@ -125,7 +133,6 @@ yarn --cwd tests/Application build
 bin/behat
 bin/phpstan.sh
 bin/ecs.sh
-vendor/bin/phpspec run
 ```
 
 ### Opening Sylius with your plugin

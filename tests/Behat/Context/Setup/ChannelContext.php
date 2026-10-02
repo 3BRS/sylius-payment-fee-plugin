@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Setup;
 
 use Behat\Behat\Context\Context;
+use Behat\Step\Given;
 use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Component\Addressing\Model\CountryInterface;
 use Sylius\Component\Addressing\Model\ZoneInterface;
@@ -35,9 +36,7 @@ final readonly class ChannelContext implements Context
     ) {
     }
 
-    /**
-     * @Given the store operates on a single channel in :currencyCode
-     */
+    #[Given('the store operates on a single channel in :currencyCode')]
     public function theStoreOperatesOnASingleChannel(string $currencyCode = 'USD'): void
     {
         // Check if channel already exists

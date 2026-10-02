@@ -12,6 +12,20 @@ workflows:
                             php_version: [ "8.2", "8.3" ]
                             symfony_version: [ "7.4" ]
 
+            -   build:
+                    name: php-<<matrix.php_version>>-sylius-<< matrix.sylius_version >>-symfony-<< matrix.symfony_version >>
+                    matrix:
+                        parameters:
+                            # Symfony 6.4 support dropped due to doctrine/annotations compatibility issues
+                            sylius_version: [ "2.3" ]
+                            php_version: [ "8.3", "8.4" ]
+                            symfony_version: [ "7.4", "8.1" ]
+                        # Symfony 8 requires PHP 8.4
+                        exclude:
+                            -   sylius_version: "2.3"
+                                php_version: "8.3"
+                                symfony_version: "8.1"
+
 jobs:
     build:
         parameters:
@@ -35,14 +49,26 @@ jobs:
 
             # Sylius & Symfony in current matrix versions
             -   run: ./bin-docker/composer require "sylius/sylius:<< parameters.sylius_version >>.*" --no-interaction --no-update --no-scripts
-            -   run: grep -o -E '"(symfony/[^"]+)"' composer.json | grep -v -E '(symfony/flex|symfony/webpack-encore-bundle|symfony/maker-bundle|symfony/panther)' | xargs printf '%s:<< parameters.symfony_version >>.* '| xargs ./bin-docker/composer require --no-interaction --no-update
+            # global Flex applies extra.symfony.require to all symfony/* packages including transitive ones
+            -   run: ./bin-docker/composer config extra.symfony.require "<< parameters.symfony_version >>.*"
+            -   run: ./bin-docker/composer global config --no-plugins allow-plugins.symfony/flex true
+            -   run: ./bin-docker/composer global require --no-progress --no-scripts --no-plugins symfony/flex
+            # Sylius 2.1 and 2.2 Behat contexts need Behat 3, their admin and shop assets Encore 5
+            -   when:
+                    condition:
+                        matches:
+                            pattern: "^2\\.[12]$"
+                            value: << parameters.sylius_version >>
+                    steps:
+                        -   run: ./bin-docker/composer require --dev "behat/behat:^3.34" --no-interaction --no-update --no-scripts
+                        -   run: ./bin-docker/docker-bash -c "cd tests/Application && npm pkg set 'devDependencies.@symfony/webpack-encore=^5.0.1'"
 
             -   run:
                     name: Wait for database
                     command: timeout 60s bash -c -- 'while ! docker compose exec -T mysql mysqladmin ping -h localhost --silent; do sleep 1; done'
 
             # COMPOSER PREFER DIST #
-            -   run: ./bin-docker/composer update --no-interaction --prefer-dist --no-plugins
+            -   run: ./bin-docker/composer update --no-interaction --prefer-dist
             -   run: ./bin-docker/docker-bash -c "rm -fr tests/Application/var/cache/*/*"
             -   run: ./bin-docker/yarn --cwd tests/Application install
             -   run: GULP_ENV=prod ./bin-docker/yarn --cwd tests/Application build
@@ -63,8 +89,8 @@ jobs:
 
             # COMPOSER PREFER LOWEST (oldest possible) #
             # has to delete vendor for next test with different libraries version to avoid Composer error 'Failed to extract...' if vendor dir cache does not exist
-            -   run: rm -fr composer.lock
-            -   run: ./bin-docker/composer update --no-interaction --prefer-lowest --no-plugins
+            -   run: rm -fr composer.lock vendor
+            -   run: ./bin-docker/composer update --no-interaction --prefer-lowest
             -   run: ./bin-docker/docker-bash -c "rm -fr tests/Application/var/cache/*/*"
             -   run: ./bin-docker/yarn --cwd tests/Application install
             -   run: GULP_ENV=prod ./bin-docker/yarn --cwd tests/Application build

@@ -7,6 +7,9 @@ namespace Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Ui;
 use Behat\Behat\Context\Context;
 use Behat\Mink\Element\NodeElement;
 use Behat\MinkExtension\Context\RawMinkContext;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
@@ -34,9 +37,7 @@ final class CheckoutContext extends RawMinkContext implements Context
     ) {
     }
 
-    /**
-     * @Given the store has a product :productName priced at :price
-     */
+    #[Given('the store has a product :productName priced at :price')]
     public function theStoreHasAProductPricedAt(string $productName, string $price): void
     {
         $productCode = strtolower(str_replace(' ', '_', $productName));
@@ -77,9 +78,7 @@ final class CheckoutContext extends RawMinkContext implements Context
         $this->entityManager->flush();
     }
 
-    /**
-     * @Given I am a logged in customer
-     */
+    #[Given('I am a logged in customer')]
     public function iAmALoggedInCustomer(): void
     {
         // Check if customer already exists
@@ -100,9 +99,7 @@ final class CheckoutContext extends RawMinkContext implements Context
         $this->visitPath('/en_US/');
     }
 
-    /**
-     * @When I add product :productName to the cart
-     */
+    #[When('I add product :productName to the cart')]
     public function iAddProductToTheCart(string $productName): void
     {
         $productCode = strtolower(str_replace(' ', '_', $productName));
@@ -118,9 +115,7 @@ final class CheckoutContext extends RawMinkContext implements Context
         $addToCartButton->click();
     }
 
-    /**
-     * @When I proceed to checkout
-     */
+    #[When('I proceed to checkout')]
     public function iProceedToCheckout(): void
     {
         $this->visitPath('/en_US/checkout/address');
@@ -147,9 +142,7 @@ final class CheckoutContext extends RawMinkContext implements Context
         }
     }
 
-    /**
-     * @When I select :paymentMethodName payment method
-     */
+    #[When('I select :paymentMethodName payment method')]
     public function iSelectPaymentMethod(string $paymentMethodName): void
     {
         $page = $this->getSession()->getPage();
@@ -161,9 +154,7 @@ final class CheckoutContext extends RawMinkContext implements Context
         $paymentMethodLabel->click();
     }
 
-    /**
-     * @Then I should see payment fee of :expectedFee
-     */
+    #[Then('I should see payment fee of :expectedFee')]
     public function iShouldSeePaymentFeeOf(string $expectedFee): void
     {
         $page = $this->getSession()->getPage();
@@ -175,9 +166,7 @@ final class CheckoutContext extends RawMinkContext implements Context
         Assert::contains($paymentFeeElement->getText(), $expectedFee, sprintf('Expected payment fee "%s" but got "%s"', $expectedFee, $paymentFeeElement->getText()));
     }
 
-    /**
-     * @Then I should not see any payment fee
-     */
+    #[Then('I should not see any payment fee')]
     public function iShouldNotSeeAnyPaymentFee(): void
     {
         $page = $this->getSession()->getPage();

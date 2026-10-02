@@ -15,8 +15,7 @@ Feature: Checkout with payment fee
         And I added product "Blue T-Shirt" to the cart
         And I am at the checkout addressing step
         When I specify the email as "customer@example.com"
-        And I specify the billing address as "New York", "Wall Street", "10005", "United States" for "John Doe"
-        And I complete the addressing step
+        And I define the billing address as "New York", "Wall Street", "10005", "United States" for "John Doe"
         And I select "Free" shipping method
         And I complete the shipping step
         And I choose "Card Payment" payment method
@@ -28,8 +27,7 @@ Feature: Checkout with payment fee
         And I added product "Green Mug" to the cart
         And I am at the checkout addressing step
         When I specify the email as "customer@example.com"
-        And I specify the billing address as "New York", "Wall Street", "10005", "United States" for "John Doe"
-        And I complete the addressing step
+        And I define the billing address as "New York", "Wall Street", "10005", "United States" for "John Doe"
         And I select "Free" shipping method
         And I complete the shipping step
         And I choose "Wire Transfer" payment method

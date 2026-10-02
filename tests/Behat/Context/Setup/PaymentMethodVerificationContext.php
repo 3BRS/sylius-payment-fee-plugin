@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Setup;
 
 use Behat\Behat\Context\Context;
+use Behat\Step\Then;
 use Sylius\Component\Core\Repository\PaymentMethodRepositoryInterface;
 use Tests\ThreeBRS\SyliusPaymentFeePlugin\Entity\PaymentMethod;
 use Webmozart\Assert\Assert;
@@ -16,9 +17,7 @@ final readonly class PaymentMethodVerificationContext implements Context
     ) {
     }
 
-    /**
-     * @Then the payment method :paymentMethodName should have fee calculator configured
-     */
+    #[Then('the payment method :paymentMethodName should have fee calculator configured')]
     public function thePaymentMethodShouldHaveFeeCalculatorConfigured(string $paymentMethodName): void
     {
         $paymentMethod = $this->findPaymentMethod($paymentMethodName);
@@ -27,9 +26,7 @@ final readonly class PaymentMethodVerificationContext implements Context
         Assert::eq($paymentMethod->getCalculator(), 'flat_rate', sprintf('Expected calculator "flat_rate" but got "%s"', $paymentMethod->getCalculator()));
     }
 
-    /**
-     * @Then the payment method :paymentMethodName fee amount should be :expectedAmount cents
-     */
+    #[Then('the payment method :paymentMethodName fee amount should be :expectedAmount cents')]
     public function thePaymentMethodFeeAmountShouldBeCents(string $paymentMethodName, string $expectedAmount): void
     {
         $paymentMethod = $this->findPaymentMethod($paymentMethodName);
