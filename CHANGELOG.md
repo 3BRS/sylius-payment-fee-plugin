@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v2.2.0 (2026-10-01)
+
+### Changed
+- Added compatibility with Sylius 2.3
+- Added compatibility with Symfony 8
+- Removed Symfony 8.0 package conflicts (`symfony/error-handler`, `symfony/var-exporter`)
+
 ## v2.1.0 (2026-01-27)
 
 ### Changed

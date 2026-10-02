@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Setup;
 
 use Behat\Behat\Context\Context;
+use Behat\Step\Given;
 use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Component\Core\Factory\PaymentMethodFactoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
@@ -27,9 +28,7 @@ final readonly class PaymentMethodSetupContext implements Context
     ) {
     }
 
-    /**
-     * @Given the store has a payment method :paymentMethodName with :amount payment fee
-     */
+    #[Given('the store has a payment method :paymentMethodName with :amount payment fee')]
     public function theStoreHasAPaymentMethodWithPaymentFee(string $paymentMethodName, string $amount): void
     {
         $paymentMethodCode = strtolower(str_replace(' ', '_', $paymentMethodName));
@@ -58,9 +57,7 @@ final readonly class PaymentMethodSetupContext implements Context
         $this->entityManager->flush();
     }
 
-    /**
-     * @Given the store has a payment method :paymentMethodName without payment fee
-     */
+    #[Given('the store has a payment method :paymentMethodName without payment fee')]
     public function theStoreHasAPaymentMethodWithoutPaymentFee(string $paymentMethodName): void
     {
         $this->theStoreHasAPaymentMethodWithPaymentFee($paymentMethodName, '$0.00');

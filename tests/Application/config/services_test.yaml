@@ -1,7 +1,7 @@
 # workaround needed for strange "test.client.history" problem
 # see https://github.com/FriendsOfBehat/SymfonyExtension/issues/88
 imports:
-    - { resource: '../../../vendor/sylius/sylius/src/Sylius/Behat/Resources/config/services.xml' }
+    - { resource: 'sylius_behat_services.php' }
 
 services:
     Symfony\Component\BrowserKit\AbstractBrowser: '@test.client'
@@ -52,9 +52,6 @@ services:
             - '@sylius.repository.order'
             - '@sylius.repository.channel'
             - '@doctrine.orm.entity_manager'
-        public: true
-
-    Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Hook\PantherServerContext:
         public: true
 
     Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Ui\PaymentFeeContext:

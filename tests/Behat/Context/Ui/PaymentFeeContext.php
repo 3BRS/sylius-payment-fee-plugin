@@ -6,13 +6,12 @@ namespace Tests\ThreeBRS\SyliusPaymentFeePlugin\Behat\Context\Ui;
 
 use Behat\Behat\Context\Context;
 use Behat\MinkExtension\Context\RawMinkContext;
+use Behat\Step\Then;
 use Webmozart\Assert\Assert;
 
 final class PaymentFeeContext extends RawMinkContext implements Context
 {
-    /**
-     * @Then I should see payment fee of :expectedFee
-     */
+    #[Then('I should see payment fee of :expectedFee')]
     public function iShouldSeePaymentFeeOf(string $expectedFee): void
     {
         $page = $this->getSession()->getPage();
@@ -31,9 +30,7 @@ final class PaymentFeeContext extends RawMinkContext implements Context
         Assert::contains($text, $expectedFee, sprintf('Expected payment fee "%s" but got "%s"', $expectedFee, $text));
     }
 
-    /**
-     * @Then I should not see any payment fee
-     */
+    #[Then('I should not see any payment fee')]
     public function iShouldNotSeeAnyPaymentFee(): void
     {
         $page = $this->getSession()->getPage();
