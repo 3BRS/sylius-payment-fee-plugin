@@ -5,7 +5,7 @@
     {% set paymentFeeAdjustment = constant('ThreeBRS\\SyliusPaymentFeePlugin\\Model\\AdjustmentInterface::PAYMENT_ADJUSTMENT') %}
     {% set paymentFeeAdjustmentTotal = order.getAdjustmentsTotal(paymentFeeAdjustment) %}
 
-    {% if paymentFeeAdjustmentTotal > 0 %}e
+    {% if paymentFeeAdjustmentTotal > 0 %}
         <tr>
             {% hook 'payment_fee' %}
         </tr>
