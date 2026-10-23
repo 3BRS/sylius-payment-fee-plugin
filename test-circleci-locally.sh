@@ -38,6 +38,8 @@ run_test_suite() {
     if [[ "${sylius_version}" =~ ^2\.[12]$ ]]; then
         ./bin-docker/composer require --dev "behat/behat:^3.34" --no-interaction --no-update --no-scripts
         ./bin-docker/docker-bash -c "cd tests/Application && npm pkg set 'devDependencies.@symfony/webpack-encore=^5.0.1'"
+        # Sylius 2.1 and 2.2 before 2.2.7 allow webpack 5.112+, which removed LoaderDependency used by @symfony/stimulus-bridge 3
+        ./bin-docker/docker-bash -c "cd tests/Application && npm pkg set 'resolutions.webpack=>=5.72 <5.109'"
     fi
 
     # Composer update
